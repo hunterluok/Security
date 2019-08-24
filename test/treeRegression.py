@@ -1,27 +1,10 @@
-
 # coding: utf-8
 
-# In[190]:
-
-
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from sklearn.datasets import make_friedman1
 from sklearn.ensemble import GradientBoostingRegressor
-
-X, y = make_friedman1(n_samples=1200, random_state=0, noise=1.0)
-x_train, x_test = X[:200], X[200:300]
-y_train, y_test = y[:200], y[200:300]
-
-y_train = y_train.reshape((200, 1))
-data = np.concatenate([x_train, y_train], axis=1)
-
-y_test = y_test.reshape((x_test.shape[0], 1))
-testdata = np.concatenate([x_test, y_test], axis=1)
-data[:2]
-
-
-# In[217]:
 
 
 class treeNode:
@@ -85,9 +68,25 @@ class Tree:
             cls.print_leafs(model.left_tree)
         if model.right_tree is not None:
             cls.print_leafs(model.right_tree)
-            
+
+    @classmethod
+    def print_featurevalue(cls, model):
+        if model.feature is not None:
+            print("feature is {} value is {}".format(model.feature, model.value))
+        if model.left_tree is not None:
+            cls.print_featurevalue(model.left_tree)
+        if model.right_tree is not None:
+            cls.print_featurevalue(model.right_tree)
+
+
     @classmethod
     def predict_line(cls, model, line):
+        """
+        预测最好不用 递归的调用
+        :param model:
+        :param line:
+        :return:
+        """
         if model.label_class is not None:
             return model.label_class
         split_feature = model.feature
@@ -96,53 +95,69 @@ class Tree:
             return cls.predict_line(model.right_tree, line)
         else:
             return cls.predict_line(model.left_tree, line)
+
+    @classmethod
+    def predict_line_new(cls, model, line):
+        temp = model
+        while temp.right_tree or temp.left_tree:
+            split_feature = temp.feature
+            split_value = temp.value
+            if line[split_feature] > split_value:
+                temp = temp.right_tree
+            else:
+                temp = temp.left_tree
+        if temp.label_class is not None:
+            return temp.label_class
+        else:
+            return "node is wrong"
         
     @classmethod
     def predict(cls, model, data):
         myre = []
         for line in data:
-            te = cls.predict_line(model, line)
+            te = cls.predict_line_new(model, line)
             myre.append(te)
         myre = np.array(myre).reshape(len(data), 1)
         return myre
 
 
-# In[218]:
-
-
-class cartreeregression(Tree):
-    def __init__(self, min_leafs=4):
-        super(cartreeregression, self).__init__()
+class CartreeRegression(Tree):
+    def __init__(self, min_leafs=4, max_depth=10, max_bins=10):
+        super(CartreeRegression, self).__init__()
         self.min_leafs = min_leafs
+        self.max_depth = max_depth
+
+        if isinstance(max_bins, int) and max_bins > 1 and max_bins < 50:
+            self.max_bins = max_bins
+        else:
+            raise ValueError("max_bins is not fit for this model")
         
-    def regleaf(self, data):
-        return np.mean(data[:,-1])
+    def regleaf(self, data, epis=3):
+        return np.round(np.mean(data[:, -1]), epis)
     
     def regerr(self, data):
-        return np.var(data[:, -1]) 
+        return np.std(data[:, -1])
     
-    def createTree(self, data):
+    def createTree(self, data, depth=0):
         retTree = treeNode()
         # 可以添加其他条件,终止树 停止生长，分类和回归树有不同的搞法。
         # 这里阐释了如何 利用递归的思想去 建立决策树
         feat, val = self.choosebestsplit(data)
         # 如果没有可以再次切分的  feature 就返回val
-        if feat is None:
+        if feat is None or depth > self.max_depth:
             retTree.label_class = self.regleaf(data)
             return retTree
-        
         retTree.feature = feat
         retTree.value = val
-        lSet, rSet = self.binsplitdata(data, feat, val)
-        retTree.left_tree = self.createTree(lSet)
-        retTree.right_tree = self.createTree(rSet)
+        lset, rset = self.binsplitdata(data, feat, val)
+        retTree.left_tree = self.createTree(lset, depth=depth+1)
+        retTree.right_tree = self.createTree(rset, depth=depth+1)
         return retTree
     
     def choosebestsplit(self, data):
         data = np.array(data)
         m, n = data.shape
-    
-    
+
         # 计算初始的方差。
         S = self.regerr(data)
         best_s = np.inf
@@ -150,22 +165,26 @@ class cartreeregression(Tree):
         best_val = None
     
         for i in range(n-1): # n-1 feature
-            for j in np.unique(data[:, i]):
+            # 这么做的好处是 可以加快运行速度，其次可以减少偏态数据的影响，亲测可行，改善预测效果（方差小偏琦大的问题）
+            minx = np.min(data[:, i])
+            maxs = np.max(data[:, i])
+            step = (maxs - minx) / self.max_bins
+            value_set = [minx + i * step for i in range(1, self.max_bins)]
+
+            for j in value_set:
+            #for j in np.unique(data[:, i]):
                 mat0, mat1 = self.binsplitdata(data, i, j)
                 # 控制叶子的数量。不进行控制 进行充分的生长
                 if (np.shape(mat0)[0] < self.min_leafs) or (np.shape(mat1)[0] < self.min_leafs):
                     continue
                 new_s = self.regerr(mat0) + self.regerr(mat1)
-                if new_s < best_s: 
+                if new_s + 5 < best_s:
                     best_feat = i
                     best_val = j
                     best_s = new_s
                 #if S - best_s < 0.01:这个地方需要再思考下
                     #return best_feat, best_val
         return best_feat, best_val
-
-
-# In[219]:
 
 
 def getMean(tree, i=0, flag=False):
@@ -181,19 +200,19 @@ def getMean(tree, i=0, flag=False):
     return means
 
 
-# In[220]:
-
-
-def binsplitdata(data, feature, value):
-    mat0 = data[data[:, feature] > value, : ]
-    mat1 = data[data[:, feature] <= value, : ]
-    return mat0, mat1
-
-
-# In[221]:
-
-
 def myprune(tree, testData, min_leafs=10, diff_err=10):
+    """
+    :param tree:
+    :param testData:
+    :param min_leafs:
+    :param diff_err:
+    :return:
+    """
+    def binsplitdata(data, feature, value):
+        mat0 = data[data[:, feature] > value, :]
+        mat1 = data[data[:, feature] <= value, :]
+        return mat0, mat1
+
     if np.shape(testData)[0] < min_leafs:
         # 这里是有一定的合理性的
         tree.label_class = getMean(tree)
@@ -205,26 +224,26 @@ def myprune(tree, testData, min_leafs=10, diff_err=10):
     
     if tree.feature is not None:
         lSet, rSet = binsplitdata(testData, tree.feature, tree.value)
+
+        if tree.left_tree.label_class is None: # and lSet.shape[0] > min_leafs:
+            tree.left_tree = myprune(tree.left_tree, lSet)
         
-    if tree.left_tree.label_class is None and tree.left_tree.value is not None: # and lSet.shape[0] > min_leafs:
-        tree.left_tree = myprune(tree.left_tree, lSet)
-        
-    if tree.right_tree.label_class is None and tree.right_tree.value is not None:# and rSet.shape[0] > min_leafs:
-        tree.right_tree = myprune(tree.right_tree, rSet)
-        
-    #if tree.left_tree is not None and not tree.right_tree is not None and tree.left_tree.label_class is not None and tree.right_tree.label_class is not None:
+        if tree.right_tree.label_class is None:# and rSet.shape[0] > min_leafs:
+            tree.right_tree = myprune(tree.right_tree, rSet)
+
+
     if tree.left_tree.label_class is not None and tree.right_tree.label_class is not None:
         lSet, rSet = binsplitdata(testData, tree.feature, tree.value)
-        errorNoMerge = sum(np.power(lSet[:,-1] - tree.left_tree.label_class,2)) + sum(np.power(rSet[:,-1] - tree.right_tree.label_class, 2.0))
+        errorNoMerge = sum(np.power(lSet[:, -1] - tree.left_tree.label_class, 2)) \
+                       + sum(np.power(rSet[:, -1] - tree.right_tree.label_class, 2.0))
         
         # 这里注意 有点意思
-        #treeMean = (tree['left'] + tree['right']) / 2.0
         treeMean = (tree.left_tree.label_class + tree.right_tree.label_class) / 2.0
-        
         # 合并之后的 的 方差
         errorMerge = sum(np.power(testData[:,-1] - treeMean, 2))
         m, n = testData.shape
-        print("errormerge {}, errornomerge {} m is {} ---".format(errorMerge / m, errorNoMerge/m, m))
+        print("errormerge {}, errornomerge {} m is {} ---".
+              format(np.round(errorMerge / m, 2), np.round(errorNoMerge/m, 2), m))
         print((errorMerge - errorNoMerge) / m, "means")
         if (errorMerge - errorNoMerge) / m < diff_err:
         #if errorMerge < errorNoMerge:
@@ -241,38 +260,28 @@ def myprune(tree, testData, min_leafs=10, diff_err=10):
         return tree
 
 
-# In[222]:
+if __name__ == "__main__":
+    X, y = make_friedman1(n_samples=1200, random_state=2, noise=2.0)
+    x_train, x_test = X[:1000], X[1000: ]#300]
+    y_train, y_test = y[:1000], y[1000: ]#300]
+    y_train = y_train.reshape((1000, 1))
+    data = np.concatenate([x_train, y_train], axis=1)
+    y_test = y_test.reshape((x_test.shape[0], 1))
+    testdata = np.concatenate([x_test, y_test], axis=1)
 
+    mymodel = CartreeRegression(min_leafs=5 , max_bins=10)
+    result = mymodel.createTree(data)
 
-mymodel = cartreeregression(min_leafs=3)
-result = mymodel.createTree(data)
-print(get_deep(result))
-sx = myprune(result, testdata, min_leafs=50, diff_err=2)
+    # sx = myprune(result, testdata, min_leafs=50, diff_err=2)
+    # print("tree depth is ", mymodel.get_deep(sx))
+    # mymodel.print_leafs(sx)
 
+    print("-"*20)
+    pred_test = mymodel.predict(result, testdata[:, :-1])
+    print(mean_squared_error(testdata[:, -1], pred_test), "\n")
 
-# In[223]:
-
-
-sx = myprune(result, testdata, min_leafs=10, diff_err=10)
-get_deep(sx)
-
-
-# In[224]:
-
-
-pred_test = mymodel.predict(sx, testdata[:, :-1])
-
-
-# In[225]:
-
-
-import matplotlib.pyplot as plt
-get_ipython().magic('matplotlib inline')
-
-
-# In[226]:
-
-
-plt.scatter(np.arange(len(testdata)), testdata[:, -1])
-plt.scatter(np.arange(len(testdata)), pred_test)
-
+    #plt.scatter(np.arange(len(testdata)), testdata[:, -1])
+    #plt.scatter(np.arange(len(testdata)), pred_test)
+    #plt.show()
+    print(mymodel.get_deep(result))
+    print(mymodel.print_featurevalue(result))
