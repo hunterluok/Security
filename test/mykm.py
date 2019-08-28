@@ -151,11 +151,9 @@ if __name__ == "__main__":
     #plt.scatter(centers[1][0], centers[1][1], color='black', marker="*")
     #plt.scatter(centers[2][0], centers[2][1], color='black', marker="*")
 
-    #def plot_scatter(data=allcenters):
     for center in allcenters:
         plt.scatter(center[0][0], center[0][1], color='black', marker="*")
         plt.scatter(center[1][0], center[1][1], color='black', marker="<")
         plt.scatter(center[2][0], center[2][1], color='black', marker=">")
-    # plot_scatter(allcenters)
     plt.show()
 
