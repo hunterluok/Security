@@ -1,20 +1,36 @@
+# utf-8
+
+"""
+多进程的 minshift
+"""
+
 from sklearn.datasets import load_iris
 
 import numpy as np
 from collections import Counter
 import matplotlib.pyplot as plt
+from multiprocessing import Queue, Process
 
 import logging
 import copy
+import time
 
 
 # 如何 分析 聚类中心的 随着迭代次数的变化。
 # 利用标记数据 分析 聚类中心点的变化。
-
-
 log_format = "%(asctime)s - %(levelname)s - %(message)s"
 date_format = "%m/%d/%Y %H:%M:%S %p"
 logging.basicConfig(level=logging.INFO, filename='my.log', filemode='w', format=log_format, datefmt=date_format)
+
+
+def get_time(func):
+    def wrapper(soup):
+        start = time.time()
+        result = func(soup)
+        use_time = int(time.time() - start)
+        print("This function \'{}\', use time {} ".format(func.__name__, use_time))
+        return result
+    return wrapper
 
 
 class MyKm:
@@ -88,7 +104,7 @@ class MyKm:
         return self.last_centers
 
     @property
-    def get_allcener(self):
+    def get_allcenter(self):
         return self.all_iter_center
 
 
@@ -135,9 +151,12 @@ class Kpp(MyKm):
 
 class MinShift:
     # 相当于给 中心点 周围的数据寻找新的 中心点？ 利用距离进行加权处理得到更优的结果。
-    def __init__(self, h, init_err=0.5):
+    # 少数 几个可以进行 分布式计算的 聚类算法。
+    # 可以将 只有少数几个 相同 漂移中的点 看作是 异常点区处理。
+    def __init__(self, h, init_err=0.5, n_jobs=3):
         self.h = h
         self.init_err = init_err
+        self.n_jobs = n_jobs
 
     def caldist(self, veca, vecb):
         dist = np.sqrt(np.sum(np.power(veca - vecb, 2)))
@@ -170,6 +189,7 @@ class MinShift:
             kernel_all.append(kernel)
         return kernel_all
 
+    # @get_time
     def fit(self, data):
         new_data = []
         for line in data:
@@ -184,6 +204,58 @@ class MinShift:
                 old_vect = mshift_vec
             new_data.append(old_vect)
         return new_data
+
+    def fit_multi(self, data):
+        q = Queue()
+        myqueus = []
+
+        def myjob(q, data):
+            result = self.fit(data)
+            q.put(result)
+
+        def split_data(data):
+            m, n = data.shape
+            indexs = int(m / self.n_jobs - 1) + 1
+            for id in range(self.n_jobs):
+                yield data[indexs * id: (id + 1) * indexs]
+
+        for ids, minidata in enumerate(split_data(data)):
+            temp_job = Process(target=myjob, args=(q, minidata), name="jon_{}".format(ids))
+            myqueus.append(temp_job)
+
+        for jobs in myqueus:
+            jobs.start()
+            # jons.join()  #放在这里 类似与单进程，时间长 0.3776
+
+        for jobs in myqueus:
+            jobs.join()  # 时间是0.124
+
+        last_result = []
+        for _ in range(self.n_jobs):
+            # 注意这里取数据的方式。
+            for line in q.get():
+                last_result.extend(line)
+        return last_result
+
+    @classmethod
+    def get_label_multi(cls, data):
+        label = []
+        for line in data:
+            # 保留一位小数是一个好的选择
+            temp = np.round(line, 1)
+            temp = "_".join([str(i) for i in temp])
+            label.append(temp)
+
+        result = Counter(label)
+        classes = [i for i in result.keys()]
+        print(classes)
+        max_class = len(result)
+        pred = []
+        for line in label:
+            for j in range(max_class):
+                if line == classes[j]:
+                    pred.append(j)
+        return label, pred
 
     @classmethod
     def get_label(cls, data):
@@ -235,14 +307,21 @@ if __name__ == "__main__":
     # 太大 导致没什么 聚类中心了。
     # 当 h 较大时 则 聚类的点数目，较少。 然后就是 对中心点 进行适当的保留小数位数，否则会造成中心点数量过多。
     # h的 选择 还有保留几位小数 将是一个比较难的选择。
-    my = MinShift(8)
-    nd = my.fit(data)
-    # np.save("nd.npy", nd)
-    # print(nd)
-    label, pred = my.get_label(nd)
-    myresult = np.array(pred).reshape(150, 1)
-    plt.scatter(data[myresult[:, 0] == 1, 0], data[myresult[:, 0] == 1, 1])
-    plt.scatter(data[myresult[:, 0] == 2, 0], data[myresult[:, 0] == 2, 1])
-    plt.scatter(data[myresult[:, 0] == 0, 0], data[myresult[:, 0] == 0, 1])
-    plt.show()
 
+    # 单进程是 0.0013388
+    # 多进程是 0.02  (3样本数才150）可能是样本太少了的缘故。
+    start = time.time()
+    my = MinShift(12)
+    nd = my.fit_multi(data)
+    # np.save("nd_multi.npy", nd)
+
+    label, pred = my.get_label_multi(nd)
+    print("this model use time {}".format(time.time()-start))
+
+    myresult = np.array(pred).reshape(150, 1)
+    for i in range(len(np.unique(pred))):
+        plt.scatter(data[myresult[:, 0] == i, 0], data[myresult[:, 0] == i, 1])
+    #plt.scatter(data[myresult[:, 0] == 1, 0], data[myresult[:, 0] == 1, 1])
+    #plt.scatter(data[myresult[:, 0] == 2, 0], data[myresult[:, 0] == 2, 1])
+    #plt.scatter(data[myresult[:, 0] == 0, 0], data[myresult[:, 0] == 0, 1])
+    plt.show()
