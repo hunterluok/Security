@@ -163,7 +163,7 @@ class MinShift:
         dist = np.sqrt(np.sum(np.power(veca - vecb, 2)))
         # dist1 = np.sqrt(np.dot(veca, vecb.T), 2)
         # print(dist, dist1)
-        return np.round(dist, 2)
+        return dist
 
     def calcu_kernel(self, data, line):
         m, n = data.shape
@@ -191,9 +191,9 @@ class MinShift:
         return kernel_all
 
     # @get_time
-    def fit(self, data):
+    def fit(self, data, minidata):
         new_data = []
-        for line in data:
+        for line in minidata:
             old_vect = line
             err = np.inf
             while err > self.init_err:
@@ -210,18 +210,21 @@ class MinShift:
         q = Queue()
         myqueus = []
 
-        def myjob(q, data):
-            result = self.fit(data)
+        #np.random.shuffle(data) 对数据打乱之后再进行分析
+        #print(data[:10])
+
+        def myjob(q, data, minidata):
+            result = self.fit(data, minidata)
             q.put(result)
 
         def split_data(data):
             m, n = data.shape
-            indexs = int(m / self.n_jobs - 1) + 1
+            indexs = int((m - 1) / self.n_jobs) + 1
             for id in range(self.n_jobs):
                 yield data[indexs * id: (id + 1) * indexs]
 
         for ids, minidata in enumerate(split_data(data)):
-            temp_job = Process(target=myjob, args=(q, minidata), name="jon_{}".format(ids))
+            temp_job = Process(target=myjob, args=(q, data, minidata), name="jon_{}".format(ids))
             myqueus.append(temp_job)
 
         for jobs in myqueus:
@@ -312,7 +315,7 @@ if __name__ == "__main__":
     # 单进程是 0.0013388
     # 多进程是 0.02  (3样本数才150）可能是样本太少了的缘故。
     start = time.time()
-    my = MinShift(12)
+    my = MinShift(10, n_jobs=3)
     nd = my.fit_multi(data)
     # np.save("nd_multi.npy", nd)
 
