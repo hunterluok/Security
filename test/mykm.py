@@ -1,6 +1,7 @@
 from sklearn.datasets import load_iris
 
 import numpy as np
+from collections import Counter
 import matplotlib.pyplot as plt
 
 import logging
@@ -47,7 +48,7 @@ class MyKm:
         self.all_iter_center.append(centers.copy())
 
         labels = np.zeros((m, 2))
-        while total_loss - init_loss > 0:  # 0.000000000000000001:
+        while total_loss - init_loss > 0:
             # while self.count < 10:
             self.count += 1
             init_loss = total_loss
@@ -132,10 +133,85 @@ class Kpp(MyKm):
         return new_centers
 
 
+class MinShift:
+    # 相当于给 中心点 周围的数据寻找新的 中心点？ 利用距离进行加权处理得到更优的结果。
+    def __init__(self, h, init_err=0.5):
+        self.h = h
+        self.init_err = init_err
+
+    def caldist(self, veca, vecb):
+        dist = np.sqrt(np.sum(np.power(veca - vecb, 2)))
+        # dist1 = np.sqrt(np.dot(veca, vecb.T), 2)
+        # print(dist, dist1)
+        return np.round(dist, 2)
+
+    def calcu_kernel(self, data, line):
+        m, n = data.shape
+        """
+        kernel = np.zeros(m)
+        for index, line in enumerate(data):
+            dist = self.caldist(line, x)
+            kernel[index] = dist
+        """
+        kernel = np.sqrt(np.sum(np.power(data - line, 2), axis=1))
+        # 在这几就可以控制不同的 核函数了。 相当于给样本加 权重，
+        # 线性的核函数给 自身的权重最小，距离越远权重越大，这是不合适的
+        kernel = (1 / (np.sqrt(2 * np.pi) * self.h)) * np.exp(-0.5 * (kernel / (self.h * self.h)))
+        # 高斯 核函数 可能收敛速度 较快。 这个核函数 收敛满，kernel = np.exp(-1 * kernel)
+        # 可以 给核函数。
+        kernel = kernel.reshape((m, 1))
+        return kernel
+
+    def calcu_kernel_new(self, data):
+        # 一个 m * m 的 矩阵
+        kernel_all = []
+        for line in data:
+            kernel = np.sqrt(np.sum(np.power(data - line, 2), axis=1))
+            kernel_all.append(kernel)
+        return kernel_all
+
+    def fit(self, data):
+        new_data = []
+        for line in data:
+            old_vect = line
+            err = np.inf
+            while err > self.init_err:
+                kernel = self.calcu_kernel(data, old_vect)
+                mh = np.dot(kernel.T, data)
+                sum_kernel = np.sum(kernel)
+                mshift_vec = mh / sum_kernel
+                err = self.calcu_kernel(mshift_vec, old_vect)
+                old_vect = mshift_vec
+            new_data.append(old_vect)
+        return new_data
+
+    @classmethod
+    def get_label(cls, data):
+        label = []
+        for line in data:
+            # 保留一位小数是一个好的选择
+            temp = np.round(list(line[0]), 1)
+            temp = "_".join([str(i) for i in temp])
+            label.append(temp)
+
+        result = Counter(label)
+        classes = [i for i in result.keys()]
+        print(classes)
+
+        max_class = len(result)
+        pred = []
+        for line in label:
+            for j in range(max_class):
+                if line == classes[j]:
+                    pred.append(j)
+        return label, pred
+
+
 if __name__ == "__main__":
     data = load_iris()['data']
     # label = load_iris()['target']
     # data = np.random.rand(200, 4)
+    """
     mymodel = Kpp(3)
     myresult, new_data = mymodel(data)
     centers = mymodel.center
@@ -150,10 +226,23 @@ if __name__ == "__main__":
     #plt.scatter(centers[0][0], centers[0][1], color='black', marker="*")
     #plt.scatter(centers[1][0], centers[1][1], color='black', marker="*")
     #plt.scatter(centers[2][0], centers[2][1], color='black', marker="*")
-
     for center in allcenters:
         plt.scatter(center[0][0], center[0][1], color='black', marker="*")
         plt.scatter(center[1][0], center[1][1], color='black', marker="<")
         plt.scatter(center[2][0], center[2][1], color='black', marker=">")
+    plt.show()
+    """
+    # 太大 导致没什么 聚类中心了。
+    # 当 h 较大时 则 聚类的点数目，较少。 然后就是 对中心点 进行适当的保留小数位数，否则会造成中心点数量过多。
+    # h的 选择 还有保留几位小数 将是一个比较难的选择。
+    my = MinShift(8)
+    nd = my.fit(data)
+    # np.save("nd.npy", nd)
+    # print(nd)
+    label, pred = my.get_label(nd)
+    myresult = np.array(pred).reshape(150, 1)
+    plt.scatter(data[myresult[:, 0] == 1, 0], data[myresult[:, 0] == 1, 1])
+    plt.scatter(data[myresult[:, 0] == 2, 0], data[myresult[:, 0] == 2, 1])
+    plt.scatter(data[myresult[:, 0] == 0, 0], data[myresult[:, 0] == 0, 1])
     plt.show()
 
