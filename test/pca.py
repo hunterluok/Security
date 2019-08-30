@@ -36,10 +36,8 @@ class MyPCA:
 
         pcadata = np.dot(datam, eigvector[:, 0:self.n])
         # pcadata = pcadata * stds + means
-
         # 重构数据 需要与 标准差和均值一起重构。
         reconstuct = np.dot(pcadata, eigvector[0:, 0:self.n].T) * stds + means
-
         #ndata = np.dot(data, eigvector)
         return pcadata, reconstuct  #, ndata
 
