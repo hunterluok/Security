@@ -12,28 +12,29 @@ class ReconstructTree:
         pass
 
     def fit(self, preorder, inorders):
-        # mynode = None
-        if len(preorder) != len(inorders):
-            raise ValueError("树的元素错误")
-
-        if len(preorder) == 1 and len(inorders) == 1:
-            if preorder[0] == inorders[0]:
-                return node(preorder[0])
-            else:
-                raise ValueError("输入不是用一颗树的不同遍历")
-
         lens = len(preorder)
+        # 长度检测
+        if lens != len(inorders) or lens < 1:
+            raise ValueError("树的元素错误")
 
         rootvalue = preorder[0]
         mynode = node(rootvalue)
+        if len(preorder) == 1 and len(inorders) == 1:
+            if preorder[0] == inorders[0]:
+                return mynode
+            else:
+                # 另外一个检测
+                raise ValueError("输入不是用一颗树的不同遍历")
+
         position = inorders.index(rootvalue)
         right_lens = lens - position - 1
-
         if position > 0:
+            # 当 postion 说明没有左子树了
             temp_preorder = preorder[1: position + 1].copy()
             temp_inorder = inorders[0: position].copy()
             mynode.left = self.fit(temp_preorder, temp_inorder)
         if right_lens > 0:
+            # 当 right_lens 为0时 说明没有右子树了。
             temp_preorder = preorder[position + 1:].copy()
             temp_inorder = inorders[position+1:].copy()
             mynode.right = self.fit(temp_preorder, temp_inorder)
