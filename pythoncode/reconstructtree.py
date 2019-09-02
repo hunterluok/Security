@@ -48,13 +48,13 @@ class ReconstructTree:
         :param test: 树节点值 按照特定的遍历方式 存入的列表
         :return: 打印节点值
         """
-        if tree.value is not None:
-            print(tree.value)
-            test.append(tree.value)
         if tree.left is not None:
             cls.print_value(tree.left, test)
         if tree.right is not None:
             cls.print_value(tree.right, test)
+        if tree.value is not None:
+            print(tree.value)
+            test.append(tree.value)
 
     @classmethod
     def compare(cls, lista, listb):
@@ -67,7 +67,7 @@ class ReconstructTree:
                 return
         print("passed")
         return
-
+    
 
 if __name__ == "__main__":
     preorderx = [1, 2, 4, 7, 3, 5, 6, 8]
@@ -76,11 +76,12 @@ if __name__ == "__main__":
     # preorderx = [1, 2, 4, 7, 3, 5, 6, 11]
     inorderx = [4, 7, 2, 1, 5, 3, 6, 8]
 
-    preorderx = [1, 2, 4, 7]
-    inorderx = [4, 7, 2, 1]
-
-    preorderx = [1, 3, 5, 6, 8]
-    inorderx = [1, 5, 3, 6, 8]
+    #preorderx = [1, 2, 4, 7]
+    #inorderx = [4, 7, 2, 1]
+    #preorderx = [1, 3, 5, 6, 8]
+    #inorderx = [1, 5, 3, 6, 8]
+    #preorderx = [1]
+    #inorderx = [7]
 
     model = ReconstructTree()
     res = model.fit(preorderx, inorderx)
