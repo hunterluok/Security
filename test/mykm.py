@@ -5,6 +5,7 @@
 """
 
 from sklearn.datasets import load_iris
+from sklearn.metrics import adjusted_rand_score
 
 import numpy as np
 from collections import Counter
@@ -285,7 +286,8 @@ class MinShift:
 
 if __name__ == "__main__":
     data = load_iris()['data']
-    # label = load_iris()['target']
+    #
+    orilabel = load_iris()['target']
     # data = np.random.rand(200, 4)
     """
     mymodel = Kpp(3)
@@ -321,6 +323,12 @@ if __name__ == "__main__":
 
     label, pred = my.get_label_multi(nd)
     print("this model use time {}".format(time.time()-start))
+
+
+    print(orilabel[:2])
+    print(pred[:2])
+
+    print(adjusted_rand_score(orilabel, pred))
 
     myresult = np.array(pred).reshape(150, 1)
     for i in range(len(np.unique(pred))):
