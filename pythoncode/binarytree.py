@@ -1,13 +1,6 @@
 
 
-import numpy as np
-
-
-class node:
-    def __init__(self, data=None, left=None, right=None):
-        self.data = data
-        self.left = left
-        self.right = right
+from pythoncode.node import BinaryTreeNode as node
 
 
 class BniaryTree:
