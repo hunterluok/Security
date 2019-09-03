@@ -90,8 +90,6 @@ for epoch in range(1, 20):
 torch.save(model.state_dict(),"hjh_mlp_1.pt")
 
 
-
-
 def line_mode(x_train, y_train, x_test, y_test):
     m22 = linear_model.RidgeCV(alphas=np.logspace(-6, 6, 13))
     result = m22.fit(x_train, y_train)
