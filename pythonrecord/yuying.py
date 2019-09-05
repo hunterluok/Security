@@ -45,7 +45,6 @@ def speak(data):
     engine.runAndWait()
 
 
-
 if __name__ == "__main__":
     engine = pyttsx3.init()
     while True:
@@ -55,3 +54,4 @@ if __name__ == "__main__":
         except:
             print(data, '--')
             pass
+
