@@ -33,7 +33,7 @@ class Gift:
 
 
 if __name__ == "__main__":
-    list = [1,2, 3, 2, 2, 1, 3]
+    list = [1, 2, 3, 2, 2, 1, 3]
     lens = 7
     my = Gift()
     result = my.getValue(list, 7)
