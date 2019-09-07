@@ -75,6 +75,7 @@ def test(a, target):
         print("not passed")
         return
 
+
 if __name__ == "__main__":
     my = mysolue()
     #
@@ -84,5 +85,5 @@ if __name__ == "__main__":
     #test("[[z]3[s]]", 'zsss')
     #test("10[2[z]]", 10 * "zz")
 
-    test("[2[2[sz]]]]", 2 * 'sz')
+    test("[2[2[ sz]]]]", 4 * ' sz')
 
