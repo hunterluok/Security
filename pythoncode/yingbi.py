@@ -89,9 +89,6 @@ def count_money(n):
 
 
 
-
-
-
 if __name__ == "__main__":
     # print(f(16))
     print(count_money(7))
