@@ -1,3 +1,6 @@
+"""
+
+"""
 
 from pythoncode.node import ThreeNode
 
@@ -33,7 +36,7 @@ class MyNode:
     @classmethod
     def print_value(cls, node, lists=[]):
         """
-        可以把一组数发放入到一个2叉树中， 然后中序遍历，这样就是从小到大排列了
+        可以把一组数发放入到一个2叉树中， 然后中序遍历，这样就是从小到大排列了, 这里 就是要达到这种效果
         :param node:
         :return:
         """
@@ -76,6 +79,13 @@ class MyNode:
                     return temp.father.value
                 if temp.father is None:
                     return None
+
+    @classmethod
+    def print_width(cls, node):
+        if node is not None:
+            print(node.value)
+
+
 
 
 if __name__ == "__main__":

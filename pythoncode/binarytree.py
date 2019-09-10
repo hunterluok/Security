@@ -36,7 +36,7 @@ class BniaryTree:
 
     @classmethod
     def print_values(clf, tree, k=1, target=None):
-        #if tree is not None:
+        # if tree is not None:
             #print(tree.data)
         if tree.left is not None:
             clf.print_values(tree.left, k=k+1, target=target)
