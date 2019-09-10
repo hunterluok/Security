@@ -82,7 +82,7 @@ while 1:
         #os.system('adb shell input keyevent KEYCODE_BACK')
         #os.system('adb shell input tap 375 1402')
         i+=1
-        print  str(i) + 'clicks have been completed'
+        print(str(i) + 'clicks have been completed')
 
 
 # In[ ]:

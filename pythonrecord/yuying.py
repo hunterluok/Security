@@ -1,14 +1,13 @@
-
+#
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
 import pyttsx3
-from multiprocessing import Process, Queue
 import logging
-
-logging.basicConfig(logging.ERROR)
+from multiprocessing import Process, Queue
+# logging.basicConfig(logging.ERROR)
 
 
 def get_data():
@@ -28,20 +27,21 @@ def speak(data):
         return
         # break
     # 控制语速
-    rate = engine.getProperty('rate')
-    engine.setProperty('rate', rate-150)
+    # rate = engine.getProperty('rate')
+    # engine.setProperty('rate', rate-150)
     # 控制音量
-    volume = engine.getProperty('volume')
-    engine.setProperty('volume', volume + 0.25)
+    # volume = engine.getProperty('volume')
+    # engine.setProperty('volume', volume + 0.25)
 
     # 声音。
-    voices = engine.getProperty('voices')
+    # voices = engine.getProperty('voices')
     # getting details of current voice
     # engine.setProperty('voice', voices[0].id)
     # #changing index, changes voices. o for male
-    engine.setProperty('voice', voices[1].id)
+    # engine.setProperty('voice', voices[1].id)
 
-    engine.say('现金到账， {} 元'.format(data))
+    # engine.say('现金到账， {} 元'.format(data))
+    engine.save_to_file('现金到账，{} 元'.format(data), "test.mp3")
     engine.runAndWait()
 
 
