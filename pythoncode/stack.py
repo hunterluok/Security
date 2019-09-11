@@ -1,46 +1,152 @@
 
 
+from pythoncode.node import SingleNode
+
+
 class Stack:
     def __init__(self):
-        pass
+        self.head = None
+        self.count = 0
 
-    def get_max(self, data):
-        lens = len(data)
-        if lens < 1:
-            return "wrong"
+    def push(self, value):
+        self.head = SingleNode(value, nexts=self.head)
+        self.count += 1
 
-        min = data[0]
-        max_reven = 0
-        max = 0
-        for i in range(lens):
-            temp = data[i]
-            temp_value = temp - min
-            if temp_value > max_reven:
-                max_reven = temp_value
-                max = temp
-            else:
-                min = temp
-        print("max is {}, min is {}, max_value is {}".format(max, min, max_reven))
-        return max_reven
+    def pop(self):
+        pop_data = self.head.value
+        self.head = self.head.nexts
+        self.count -= 1
+        return pop_data
 
-    @staticmethod
-    def test(func, data, target):
-        result = func(data)
-        print("result is {}".format(result))
-        if result == target:
-            print("passed")
+    def show(self):
+        temp = self.head
+        while temp is not None:
+            print(temp.value)
+            temp = temp.nexts
+
+    def _top(self):
+        if self.head is None:
+            return -1
         else:
-            print("not passed")
+            return self.head.value
+
+    @property
+    def stack(self):
+        return self.head
+
+    @property
+    def lens(self):
+        return self.count
+
+    @property
+    def top(self):
+        return self._top()
+
+
+class StackMin(Stack):
+    """
+    利用遍历的方式 查找最小值和最大值
+    """
+    def __init__(self):
+        super(StackMin, self).__init__()
+        self.min = 10000
+        self.max = -10000
+
+    def minvalue(self):
+        temp = self.head
+        while temp is not None:
+            if self.min > temp.value:
+                self.min = temp.value
+            temp = temp.nexts
+        return self.min
+
+    def maxvalue(self):
+        temp = self.head
+        while temp is not None:
+            if self.max < temp.value:
+                self.max = temp.value
+            temp = temp.nexts
+        return self.max
+
+
+class StackWithMin:
+    """
+    新建stack 保存最大值或最小值
+    """
+    def __init__(self):
+        self.stack_1 = Stack()
+        self.stack_2 = Stack()
+        self.stack_3 = Stack()
+
+    def push(self, value):
+        self.stack_1.push(value)
+        if self.stack_2.count == 0:
+            self.stack_2.push(value)
+        elif self.stack_2.top <= value:
+            self.stack_2.push(self.stack_2.top)
+        else:
+            self.stack_2.push(value)
+
+        if self.stack_3.count == 0:
+            self.stack_3.push(value)
+        elif self.stack_3.top <= value:
+            self.stack_3.push(value)
+        else:
+            self.stack_3.push(self.stack_3.top)
+
+    def pop(self):
+        value = self.stack_1.pop()
+        self.stack_2.pop()
+        self.stack_3.pop()
+        return value
+
+    def get_min(self):
+        return self.stack_2.top
+
+    def get_max(self):
+        return self.stack_3.top
+
+    def show(self):
+        temp = self.stack_1.head
+        while temp is not None:
+            print(temp.value)
+            temp = temp.nexts
+
+    def show_min(self):
+        temp = self.stack_2.head
+        while temp is not None:
+            print(temp.value)
+            temp = temp.nexts
+
+    def show_max(self):
+        temp = self.stack_3.head
+        while temp is not None:
+            print(temp.value)
+            temp = temp.nexts
+
+    @classmethod
+    def show(cls, node):
+        temp = node
+        while temp is not None:
+            print(temp.value)
+            temp = temp.nexts
 
 
 if __name__ == "__main__":
-    my = Stack()
-    # data = [5, 4, 3, 7, 9]
-    # data = []
-    # data = [1, 2, 3, 5, 6]
-    data = [6, 5, 4, 3, 2, 1]
-    data = [3, 2]
-    data = [2, 3]
-    #print(my.get_max(data))
-    my.test(my.get_max, data, 6)
+    #my = StackMin()
+    my = StackWithMin()
+    my.push(3)
+    my.push(2)
+    my.push(1)
+    my.push(44)
+    my.show()
+    #print(my.minvalue())
+    #print(my.maxvalue())
+    print("---")
+    # print(my.getmin())
+
+    my.show_min()
+    print("----")
+    my.show_max()
+
 

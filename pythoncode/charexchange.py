@@ -39,7 +39,6 @@ class AllRank(CharExchange):
         return lists
 
 
-
 if __name__ == "__main__":
     my = CharExchange()
     data = ['a', 'b', 'c']#, 'd']
