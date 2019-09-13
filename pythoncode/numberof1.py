@@ -40,6 +40,5 @@ if __name__ == "__main__":
     my = Numberof1(start=0)
     result = my.cal(data)
     print(result)
-
-
     print(300 + 1000 + 9 * 280 + 9 * 19 + 9)
+

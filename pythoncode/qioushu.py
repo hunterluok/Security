@@ -69,10 +69,45 @@ class JiOuShu:
         return data
 
 
+# -*- coding:utf-8 -*-
+# import numpy as np
+class Solution:
+    def reOrderArray(self, array):
+        # write code here
+        lens = len(array)
+        if len(array) < 2:
+            return array
+        mycount = self.count(array)
+        # new_data = np.zeros(lens)
+        # new_data = np.repeat(0, lens)
+        new_data = array[:] #.copy()
+        even_index = 0
+        ou_index = mycount
+        for ele in array:
+            if ele % 2 == 0:
+                new_data[ou_index] = ele
+                ou_index += 1
+            else:
+                new_data[even_index] = ele
+                even_index += 1
+        return new_data
+
+    def count(self, data):
+        mycount = 0
+        for ele in data:
+            if ele % 2 == 1:
+                mycount += 1
+        return mycount
+
+
 if __name__ == "__main__":
     my = JiOuShu()
     data = [2, 1, 3, 4, 5, 7, 8, 9]
     # print(my.rank_another(data))
-    print(my.rank(data))
-    # print(my.rank_f(data))
+    #print(my.rank(data))
+    #
+    print(my.rank_f(data))
+
+    my1 = Solution()
+    print(my1.reOrderArray(data))
 
