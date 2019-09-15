@@ -1,5 +1,8 @@
 
 
+from collections import deque
+
+
 from pythoncode.binarytree import BniaryTree
 from pythoncode.node import BinaryTreeNode
 
@@ -58,7 +61,8 @@ mytree.right.right = BinaryTreeNode(data=5)
 
 class MiorrTree:
     def __init__(self):
-        pass
+        self.myqueue = deque()
+        self.mylist = []
 
     def compare(self, node1, node2):
         """
@@ -69,10 +73,10 @@ class MiorrTree:
         """
         if node1 is None and node2 is None:
             return True
-
+        # 结构 是否对称进行检验
         if node1 is None or node2 is None:
             return False
-
+        # 结构相同，但是取值 是否相同，进行判断。
         if node1.data != node2.data:
             return False
         # 如果相等的化 进行下一步的比较，就行了的。
@@ -103,6 +107,36 @@ class MiorrTree:
         # 这是是否 进行 return 都是可以的，但是 原始的 node 肯定会被修改了。
         # return node
 
+    def width_print(self, node):
+        """
+        利用一个 队列， 实现广度优先遍历。
+        :param node:
+        :return:
+        """
+        if node is None:
+            return
+        self.myqueue.append(node)
+        while len(self.myqueue) > 0:
+            pop_front = self.myqueue.popleft()
+            print(pop_front.data)
+            if pop_front.left is not None:
+                self.myqueue.append(pop_front.left)
+            if pop_front.right is not None:
+                self.myqueue.append(pop_front.right)
+
+    def width_print_another(self, node):
+        if node is None:
+            return
+        self.mylist.append(node)
+        while len(self.mylist) > 0:
+            first_node = self.mylist[0]
+            print(first_node.data, end=" ")
+            self.mylist = self.mylist[1:]
+            if first_node.left is not None:
+                self.mylist.append(first_node.left)
+            if first_node.right is not None:
+                self.mylist.append(first_node.right)
+
 
 if __name__ == "__main__":
     my = MyBinaryTree()
@@ -115,7 +149,7 @@ if __name__ == "__main__":
     print(mylists)
     my.print_tree(mytree)
 
-    print("--"*10)
+    print("--" * 10)
     # 判断二叉树 是否是对称的。
     my2 = MiorrTree()
     print(my2.compare(mytree, mytree))
@@ -125,19 +159,33 @@ if __name__ == "__main__":
     for ele in [8, 6, 10, 5, 7, 9, 11]:
         mytree2.insertdata(ele)
     mytree2.print_values(mytree2.head)
-
-
+    print("-*-" * 10)
     import copy
-    print("<"*4)
-    my.print_tree(mytree2.head)
-    print("镜像")
+    #print("<"*4)
+    # my.print_tree(mytree2.head)
+    #print("镜像")
     #result = copy.copy(mytree2.head)
     #ne =
-    my2.get_mirror(mytree2.head)
-    #print(my.print_tree(ne))
-
     #my2.get_mirror(mytree2.head)
-    print("origin al : ")
-    my.print_tree(mytree2.head)
+    #print(my.print_tree(ne))
+    #my2.get_mirror(mytree2.head)
+    #print("origin al : ")
+    #my.print_tree(mytree2.head)
+    print("width print :")
+    my2.width_print(mytree2.head)
 
+    print("width print _list : ")
+    my2.width_print_another(mytree2.head)
+
+
+    a = deque()
+    a.append(2)
+    a.append(10)
+    a.append(101)
+    #print(a.pop())
+    #print(a.popleft())
+    # print(a.pop())
+    #print(len(a))
+    b = []
+    print("xx is {}".format(len(b)))
 
