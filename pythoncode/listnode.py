@@ -14,11 +14,14 @@ class ListNode:
             self.head = new_node
             self.count += 1
             return
-        temp = self.head
-        if temp.nexts is not None:
-            temp = temp.nexts
-        temp.nexts = new_node
-        self.count += 1
+        else:
+            temp = self.head
+            # 这里的 while 而不是 if 一定要注意的
+            while temp.nexts is not None:
+                temp = temp.nexts
+            temp.nexts = new_node
+            self.count += 1
+            return
 
     def pop(self):
         """
@@ -43,9 +46,7 @@ class ListNode:
 
 if __name__ == "__main__":
     my = ListNode()
-    my.push(1)
-    my.push(2)
-    my.push(3)
-    my.print_value()
-    my.pop()
+    for i in range(4, 8):
+        my.push(i)
+
     my.print_value()

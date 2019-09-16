@@ -18,6 +18,9 @@ class Stack:
         self.count -= 1
         return pop_data
 
+    def isempty(self):
+        return self.count == 0
+
     def show(self):
         temp = self.head
         while temp is not None:
@@ -148,5 +151,4 @@ if __name__ == "__main__":
     my.show_min()
     print("----")
     my.show_max()
-
 

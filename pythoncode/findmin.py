@@ -28,7 +28,7 @@ class FindMin:
             if end - start == 1:
                 return data[end]
 
-            if data[mid] >= data[end]:
+            if data[mid] >= data[start]:
                 start = mid
             if data[mid] <= data[end]:
                 end = mid

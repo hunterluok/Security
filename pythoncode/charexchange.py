@@ -2,6 +2,7 @@
 
 import numpy as np
 
+
 class CharExchange:
     def __init__(self):
         pass
@@ -16,7 +17,6 @@ class CharExchange:
                 #print(data)
                 self.rank(data, start=start + 1)
                 data[i], data[start] = data[start], data[i]
-
 
 
 if __name__ == "__main__":
