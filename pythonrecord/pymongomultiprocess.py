@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO, filename='my.log', filemode='w', format=
 
 
 class ProcessDataSingleThread:
-    def __init__(self, ips="192.168.31.51", ports="6666"):
+    def __init__(self, ips, ports):
         paths = "mongodb://{}:{}/".format(ips, ports)
         self.client = pymongo.MongoClient(paths)
 
