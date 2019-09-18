@@ -9,7 +9,7 @@ class Search:
         self.cols = cols
         self.label = np.zeros(rows * cols)
 
-    def find(self, data, start=0, end=0, target='abcds'):
+    def find(self, data, start=0, end=0, target='abcd'):
         """
         data = np.array([[a, b, x],[x, c, d], [x,x,x]])
         :param data:
@@ -38,10 +38,39 @@ class Search:
             return temp
         return 'x'
 
+    def find_another(self, data, target='abcd'):
+        length = 0
+        for col in range(self.rows):
+            for row in range(self.rows):
+                if self.fit_another(data, row, col, length, target):
+                    print("find it")
+                    return True
+        print("not find it")
+        return False
+
+    def fit_another(self, data, start, end, length, target):
+        if len(target) == length:
+            return True
+        has_path = False
+        if start < self.rows and end < self.cols and start >= 0 and end >= 0 \
+                and self.label[start * self.rows + end] == 0 \
+                and target[length] == data[start][end]:
+            length += 1
+            self.label[start * self.rows + end] = 1
+
+            has_path = self.fit_another(data, start, end-1, length, target) | \
+                self.fit_another(data, start, end+1, length, target) | \
+                self.fit_another(data, start-1, end, length, target) | \
+                self.fit_another(data, start+1, end, length, target)
+            if not has_path:
+                length -= 1
+                self.label[start * self.rows + end] = 0
+        return has_path
+
 
 if __name__ == "__main__":
-    data = np.array([['a', 'b', 'x'], ['x', 'c', 'd'], ['x', 'x', 'x']])
+    data = np.array([['a', 'b', 'e'], ['f', 'c', 'd'], ['g', 'x', 'h']])
     my = Search()
-    result = my.find(data)
+    result = my.find_another(data)
     print(result)
 
