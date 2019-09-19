@@ -23,6 +23,18 @@ class ListNode:
             self.count += 1
             return
 
+    def push_node(self, mynode):
+        if self.head is None:
+            self.head = mynode
+            self.count += 1
+            return
+        temp = self.head
+        while temp.nexts is not None:
+            temp = temp.nexts
+        temp.nexts = mynode
+        self.count += 1
+        return
+
     def pop(self):
         """
         pop 掉第一个节点
@@ -42,6 +54,10 @@ class ListNode:
         while temp is not None:
             print(temp.value)
             temp = temp.nexts
+
+    @property
+    def younode(self):
+        return self.head
 
 
 if __name__ == "__main__":

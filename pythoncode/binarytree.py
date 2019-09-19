@@ -1,6 +1,7 @@
 
 
 from pythoncode.node import BinaryTreeNode as node
+from collections import  deque
 
 
 class BniaryTree:
@@ -33,6 +34,94 @@ class BniaryTree:
         mylist = []
         self.print_values_anther(temp, mylist)
         return mylist[k-1]
+
+    @staticmethod
+    def print_zhi(node):
+        if node is None:
+            return
+
+        mylist = deque()
+        print_index = 1
+        count_index = 0
+        even_index = 0
+        mylist.append(node)
+        mylist_temp = deque()
+        while len(mylist) > 0:
+            temp_node = mylist[0]
+            mylist_temp.append(temp_node)
+
+            if temp_node.left is not None:
+                mylist.append(temp_node.left)
+                count_index += 1
+            if temp_node.right is not None:
+                mylist.append(temp_node.right)
+                count_index += 1
+
+            print_index -= 1
+            mylist.popleft()
+
+            if print_index == 0:
+                if even_index == 0:
+                    while len(mylist_temp) > 0:
+                        pop_node = mylist_temp.popleft()
+                        print(pop_node.data, end=" ")
+                    even_index = 1
+                elif even_index == 1:
+                    while len(mylist_temp) > 0:
+                        pop_node = mylist_temp.pop()
+                        print(pop_node.data, end=" ")
+                    even_index = 0
+                print("\n")
+                print_index = count_index
+                count_index = 0
+
+    @staticmethod
+    def print_width(node):
+        if node is None:
+            return
+        mylist = deque()
+        mylist.append(node)
+        while len(mylist) > 0:
+            temp_node = mylist[0]
+            print(temp_node.data)
+            if temp_node.left is not None:
+                mylist.append(temp_node.left)
+            if temp_node.right is not None:
+                mylist.append(temp_node.right)
+            mylist.popleft()
+
+    @staticmethod
+    def print_node_level(node):
+        """
+        同一层的 节点放在一起
+        :param node:
+        :return:
+        """
+        if node is None:
+            print("node is None")
+            return
+        node_list = []
+        # 计数需要打印的节点数量
+        level_index = 0
+        # 标记需要 打印的 节点的数量
+        print_index = 1
+        node_list.append(node)
+        while len(node_list) > 0:
+            mynode = node_list[0]
+            print(mynode.data, end=' ')
+            if mynode.left is not None:
+                node_list.append(mynode.left)
+                level_index += 1
+            if mynode.right is not None:
+                node_list.append(mynode.right)
+                level_index += 1
+
+            node_list = node_list[1:]
+            print_index -= 1
+            if print_index == 0:
+                print('\n')
+                print_index = level_index
+                level_index = 0
 
     @classmethod
     def print_values(clf, tree, k=1, target=None):
@@ -139,12 +228,22 @@ class BniaryTree:
 
 if __name__ == "__main__":
     bt = BniaryTree()
+    bt.insertdata(8)
     bt.insertdata(4)
+    bt.insertdata(12)
     bt.insertdata(2)
+    bt.insertdata(6)
+    bt.insertdata(10)
+    bt.insertdata(14)
+
+    bt.insertdata(1)
     bt.insertdata(3)
     bt.insertdata(5)
+    bt.insertdata(7)
     bt.insertdata(9)
     bt.insertdata(11)
+    bt.insertdata(13)
+    bt.insertdata(15)
     # bt.print_values(bt.head)
     #result = \
     bt.print_values_anther(bt.head)
@@ -154,6 +253,10 @@ if __name__ == "__main__":
     #print("result is {} ".format(result))
     #res= bt.get_maxk(3)
     #print("result is {} ".format(res))
-    deep = bt.get_treedeep(bt.head)
-    deep_2 = bt.get_deep_another(bt.head)
-    print("Tree deep is {} , {}".format(deep, deep_2))
+    # deep = bt.get_treedeep(bt.head)
+    # deep_2 = bt.get_deep_another(bt.head)
+    # print("Tree deep is {} , {}".format(deep, deep_2))
+    bt.print_node_level(bt.head)
+    print("*" * 20)
+    # bt.print_width(bt.head)
+    bt.print_zhi(bt.head)

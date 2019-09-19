@@ -5,7 +5,6 @@
 #         self.next = None
 
 
-
 class Solution:
     def FindKthToTail(self, head, k):
         # write code here
@@ -22,3 +21,4 @@ class Solution:
             return temp_another
         else:
             return None
+

@@ -55,3 +55,4 @@ if __name__ == "__main__":
     data = [3, 2, 4, 9, 10, 5]
     target = 13
     print(my.find_notsort(data, target))
+
