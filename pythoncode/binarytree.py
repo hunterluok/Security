@@ -1,10 +1,10 @@
 
 
 from pythoncode.node import BinaryTreeNode as node
-from collections import  deque
+from collections import deque
 
 
-class BniaryTree:
+class BinaryTree:
     def __init__(self):
         self.head = None
         self.count = 0
@@ -227,7 +227,7 @@ class BniaryTree:
 
 
 if __name__ == "__main__":
-    bt = BniaryTree()
+    bt = BinaryTree()
     bt.insertdata(8)
     bt.insertdata(4)
     bt.insertdata(12)
