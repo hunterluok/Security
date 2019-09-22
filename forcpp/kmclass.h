@@ -68,7 +68,7 @@ public:
 						label = j;
 					}
 				}
-				// 更新聚类标签， 更新 距离。
+				// 更新聚类标签， 更新距离。
 				labels[i][0] = label;
 				labels[i][1] = dist;
 			}
