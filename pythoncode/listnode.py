@@ -59,6 +59,14 @@ class ListNode:
     def younode(self):
         return self.head
 
+    @classmethod
+    def print_node(cls, node):
+        # 利用递归的方式翻转打印链表
+        if node is not None:
+            if node.nexts is not None:
+                cls.print_node(node.nexts)
+            print(node.value)
+
 
 if __name__ == "__main__":
     my = ListNode()
@@ -66,3 +74,6 @@ if __name__ == "__main__":
         my.push(i)
 
     my.print_value()
+    print("**"*10)
+    my.print_node(my.head)
+
