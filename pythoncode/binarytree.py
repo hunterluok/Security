@@ -192,6 +192,8 @@ class BinaryTree:
                 max_deep = temp_deep
         return max_deep
 
+
+
     @classmethod
     def get_deep_another(cls, tree):
         """
@@ -212,6 +214,25 @@ class BinaryTree:
 
 
     @classmethod
+    def get_deep_another_min(cls, tree):
+        """
+        此处 一层节点算 一个deep
+        :param tree:
+        :return:
+        """
+        if tree is None:
+            return 0
+
+        left_deep = cls.get_deep_another(tree.left)
+        right_deep = cls.get_deep_another(tree.right)
+        if left_deep < right_deep:
+            min_deep = left_deep + 1
+        else:
+            min_deep = right_deep + 1
+        return min_deep
+
+
+    @classmethod
     def find_value(cls, model, data):
         # 没法用 RETURN
         if model.value == data:
@@ -228,28 +249,35 @@ class BinaryTree:
 
 if __name__ == "__main__":
     bt = BinaryTree()
-    bt.insertdata(8)
-    bt.insertdata(4)
-    bt.insertdata(12)
-    bt.insertdata(2)
-    bt.insertdata(6)
-    bt.insertdata(10)
-    bt.insertdata(14)
+    # bt.insertdata(8)
+    # bt.insertdata(4)
+    # bt.insertdata(12)
+    # bt.insertdata(2)
+    # bt.insertdata(6)
+    # bt.insertdata(10)
+    # bt.insertdata(14)
+    #
+    # bt.insertdata(1)
+    # bt.insertdata(3)
+    # bt.insertdata(5)
+    # bt.insertdata(7)
+    # bt.insertdata(9)
+    # bt.insertdata(11)
+    # bt.insertdata(13)
+    # bt.insertdata(15)
 
-    bt.insertdata(1)
-    bt.insertdata(3)
-    bt.insertdata(5)
-    bt.insertdata(7)
-    bt.insertdata(9)
-    bt.insertdata(11)
-    bt.insertdata(13)
-    bt.insertdata(15)
+    for i in range(1, 5):
+        bt.insertdata(i)
+
     # bt.print_values(bt.head)
     #result = \
-    bt.print_values_anther(bt.head)
-    print("*"*10)
+    # bt.print_values_anther(bt.head)
+    # print("*"*10)
     # print(bt.count, " total values")
-    # print(bt.get_treedeep(bt.head))
+    # print
+
+
+
     #print("result is {} ".format(result))
     #res= bt.get_maxk(3)
     #print("result is {} ".format(res))
@@ -258,5 +286,8 @@ if __name__ == "__main__":
     # print("Tree deep is {} , {}".format(deep, deep_2))
     bt.print_node_level(bt.head)
     print("*" * 20)
-    # bt.print_width(bt.head)
-    bt.print_zhi(bt.head)
+    # # bt.print_width(bt.head)
+    # bt.print_zhi(bt.head)
+
+
+    print(bt.get_deep_another_min(bt.head))

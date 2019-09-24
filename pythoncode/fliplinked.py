@@ -41,12 +41,56 @@ class LinkList:
         new_node = None
         while temp is not None:
             # cur = temp , 这里的copy比较重要，因为修改的了 链表的结构。
-            cur = copy.copy(temp)
+            #cur = copy.copy(temp)
+            cur = temp
             temp = temp.nexts
             # 上面这句的 顺序不能换， 否则有问题
             cur.nexts = new_node
             new_node = cur
         return new_node
+
+    @classmethod
+    def flip2(cls, node):
+        # 从第2个开始 翻转链表
+        if node is None or node.nexts is None:
+            return node
+        new_node = node
+        temp = node.nexts
+        temp_new = None
+        while temp is not None:
+            cur = copy.copy(temp)
+            #cur = temp
+            temp = temp.nexts
+            cur.nexts = temp_new
+            temp_new = cur
+        new_node.nexts = temp_new
+        return new_node
+
+    @staticmethod
+    def check(temp_node, values):
+        node = temp_node
+        while node is not None:
+            if node.value == values:
+                return True
+            node = node.nexts
+        return False
+
+    @classmethod
+    def omit_k(cls, temp_node, value):
+        node = temp_node
+        if not LinkList.check(node, value):
+            print("value is not in the nodes")
+            return
+        if node.value == value:
+            node = node.nexts
+            return node
+
+        while node.nexts is not None:
+            if node.nexts.value == value:
+                node.nexts = node.nexts.nexts
+                return temp_node
+            node = node.nexts
+        # check valu in node
 
     @classmethod
     def find_k(cls, node, k):
@@ -81,16 +125,24 @@ if __name__ == "__main__":
     mylink.push(3)
     mylink.push(4)
     mylink.push(5)
+    mylink.push(6)
     mylink.print_value(mylink.head)
     print("*"*20)
 
     # 链表反转
-    # newnode = mylink.flip(mylink.head)
+    newnode = mylink.flip(mylink.head)
+    mylink.print_value(newnode)
+    print("*" * 20)
+
+    # newnode = mylink.flip2(mylink.head)
     # mylink.print_value(newnode)
-    # print("*" * 20)
+    #
+    # print("删除*" * 20)
+    # res = mylink.omit_k(mylink.head, 6)
+    # mylink.print_value(res)
 
     # 链表中的第 K个节点。
     # mylink.print_value(mylink.head)
     # print("-"*10)
-    print(mylink.find_k(mylink.head, 1))
+    # print(mylink.find_k(mylink.head, 1))
 
