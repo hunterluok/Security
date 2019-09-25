@@ -23,8 +23,6 @@ bool find(T value);
 bool omit(T value);
 bool show();
 
-
-
 private:
 	T maxsize;
 	T *elements;
