@@ -212,8 +212,8 @@ class MinShift:
     def fit_multi(self, data):
         q = Queue()
         myqueus = []
-        #np.random.shuffle(data) 对数据打乱之后再进行分析
-        #print(data[:10])
+        # np.random.shuffle(data) 对数据打乱之后再进行分析
+        # print(data[:10])
         def myjob(q, data, minidata):
             result = self.fit(data, minidata)
             q.put(result)
