@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <map>
 
 using namespace std;
 
@@ -57,6 +58,45 @@ bool readdata(string path,  vector<vector<float> >& data)
 	return true;
 }
 
+
+
+bool myreaddata(string path,  vector<vector<int> >& data)
+{
+    ifstream myfile(path, ios::in);
+    if(!myfile)
+    {
+        cout << "打开文件出错" << endl;
+        return false;
+    }
+
+    string myn;
+    while(getline(myfile, myn))
+    {
+        vector<int> temp_vector;
+        istringstream line(myn);
+
+        string temp_index;
+        line >> temp_index;
+
+        string temp;
+        while(line >> temp)
+        {
+            int temp_float=0;
+            // 注意这里 是如何将 string 转化为 float的，很有用处/。
+            stringstream another;
+            another << temp;
+            another >> temp_float;
+
+            temp_vector.push_back(temp_float);
+        }
+        data.push_back(temp_vector);
+
+    }
+    myfile.close();
+    return true;
+}
+
+
 bool writedata(string path,  vector<vector<float> > data)
 {
 	ofstream myfile(path, ios::out);
@@ -76,14 +116,68 @@ bool writedata(string path,  vector<vector<float> > data)
 }
 
 
-void showvector(vector<vector<float> > data)
+bool read_label(string path, vector<int>& data)
 {
-	for(int i=0; i<data.size(); ++i)
-	{
-		for(int j=0; j<data[i].size(); ++j)
-			cout << data[i][j] << " ";
-		cout << endl;
-	}
+    ifstream myfile(path, ios::in);
+    if(!myfile)
+    {
+        cout << "打开文件出错" << endl;
+        return false;
+    }
+
+    int myn;
+    while(myfile >> myn)
+    {
+        data.push_back(myn);
+    }
+    myfile.close();
+    return true;
 }
+
+
+template<typename T>
+void showdata(const T& data)
+{
+    // 这里的 const_iterator 不能换成 iterator；
+   typename T::const_iterator iter = data.begin();
+   while(iter != data.end())
+   {
+        cout << *iter << ' ';
+        iter ++;
+   }
+   cout << endl;
+}
+
+template<typename T>
+float sumdata(const T& data)
+{
+    float sums = 0.0;
+    for(int i=0; i < data.size(); ++i)
+    {
+        sums += data[i];
+    }
+    return sums;
+}
+
+template<typename T>
+void showmap(const T& data)
+{
+    typename T::const_iterator iter = data.begin();
+    while(iter != data.end())
+    {
+        cout << "key is " << iter -> first << " value is " << iter -> second;
+        iter ++;
+    }
+}
+//template<typename T>
+//void showdata(const T& data)
+//{
+//	typename T::const_iterator iter = data.begin();
+//	for(; iter!= data.end(); ++iter)
+//	{
+//		cout  << ' ' << *iter;
+//	}
+//	cout << endl;
+//}
 
 #endif
