@@ -7,6 +7,22 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 
 
+class GetData:
+    @staticmethod
+    def get_testdata():
+        from sklearn.datasets import load_iris
+        data = load_iris()['data']
+        label = load_iris()['target']
+        mean = np.mean(data, axis=0)
+        new_data = []
+        for line in data[:100]:
+            temp = line > mean
+            temp = [1 if i else 0 for i in temp]
+            new_data.append(temp)
+        new_label = label[:100]
+        return new_data, new_label, data, label
+
+
 class NBayes:
     def __init__(self):
         self.param = {}
@@ -51,19 +67,9 @@ class NBayes:
             pred.append(temp_pred)
         return pred
 
-    @staticmethod
-    def get_testdata():
-        from sklearn.datasets import load_iris
-        data = load_iris()['data']
-        label = load_iris()['target']
-        mean = np.mean(data, axis=0)
-        new_data = []
-        for line in data[:100]:
-            temp = line > mean
-            temp = [1 if i else 0 for i in temp]
-            new_data.append(temp)
-        new_label = label[:100]
-        return new_data, new_label, data, label
+    @property
+    def parameter(self):
+        return self.param
 
 
 class MultiNB(NBayes):
@@ -79,9 +85,9 @@ class MultiNB(NBayes):
         for k_label in n_class:
             sub_data = self.split_data(data, label, k_label)
             sub_count = np.sum(np.sum(sub_data))
-            # pri = 0.5
+            pri = 0.333
             # 相当于 模型的参数，2个参数？
-            pri = sub_count / all_count
+            # pri = sub_count / all_count
             like_vect = (np.sum(sub_data, axis=0) + self.a) / (sub_count + n * self.a)
             # like_vect = (np.sum(sub_data, axis=0) + self.a) / (sub_count + 2)
             self.param.setdefault(k_label, {})
@@ -89,15 +95,10 @@ class MultiNB(NBayes):
             self.param[k_label]['like{}'.format(k_label)] = like_vect
         return self
 
-    @property
-    def parameter(self):
-        return self.param
-
 
 class BeNB(NBayes):
     def __init__(self, a=1):
         super(BeNB, self).__init__()
-        self.param = {}
         self.a = a
 
     def fit(self, data, label):
@@ -128,11 +129,13 @@ class BeNB(NBayes):
                 label = k
         return label
 
+
 class GsNB(NBayes):
     def __init__(self):
         super(GsNB).__init__()
-        self.param = {}
         self.eps = 10e-4
+        self.complement = False
+        self.param = {}
 
     def fit(self, data, label):
         n_class = np.unique(label)
@@ -159,7 +162,6 @@ class GsNB(NBayes):
         return np.multiply(left, right)
 
     def predict_one(self, line, complement=False):
-        print("sx")
         label = None
         max_value = -np.inf
         for k, v in self.param.items():
@@ -173,22 +175,17 @@ class GsNB(NBayes):
                 label = k
         return label
 
-    @property
-    def parameter(self):
-        return self.param
-
 
 if __name__ == "__main__":
-    my = NBayes()
+    new_data, new_label, data, label = GetData.get_testdata()
 
-    new_data, new_label, data, label = my.get_testdata()
+    new_data, new_label = data, label
 
     # sklearn 的算法
     muti = MultinomialNB(alpha=1)
     reult = muti.fit(new_data, new_label)
     preds = muti.predict(new_data)
     print(accuracy_score(new_label, preds))
-
 
     gs = GaussianNB()
     reult = gs.fit(new_data, new_label)
@@ -201,28 +198,25 @@ if __name__ == "__main__":
     print(accuracy_score(new_label, preds))
     print(newmodel.parameter)
 
-
     print("xxx"*10)
     newmodel = MultiNB(complement=False)
     preds = newmodel.fit(np.array(new_data), new_label).predict(np.array(new_data))
     print(accuracy_score(new_label, preds))
     print(newmodel.parameter)
 
+    # print("xxxber"*10)
+    # newmodel = BeNB()
+    # preds = newmodel.fit(np.array(new_data), new_label).predict(np.array(new_data))
+    # print(accuracy_score(new_label, preds))
 
-    print("xxxber"*10)
-    newmodel = BeNB()
-    preds = newmodel.fit(np.array(new_data), new_label).predict(np.array(new_data))
-    print(accuracy_score(new_label, preds))
-
-
-    # print("-" * 20)
-    # gsmode = GsNB()
-    # # preds = gsmode.fit(np.array(new_data), new_label).predict(np.array(new_data))
-    # # print(accuracy_score(new_label, preds))
-    # # print(gsmode.parameter)
-    # preds = gsmode.fit(data, label).predict(data)
-    # print(accuracy_score(label, preds))
+    print("-" * 20)
+    gsmode = GsNB()
+    # preds = gsmode.fit(np.array(new_data), new_label).predict(np.array(new_data))
+    # print(accuracy_score(new_label, preds))
     # print(gsmode.parameter)
+    preds = gsmode.fit(data, label).predict(data)
+    print(accuracy_score(label, preds))
+    print(gsmode.parameter)
     #
     # print("--" * 15)
     # gs = GaussianNB()
