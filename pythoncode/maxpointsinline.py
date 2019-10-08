@@ -24,10 +24,10 @@ class maxpoints:
                 else:
                     k = np.inf
                     b = x1
-
                 key = str(k) + "_" + str(b)
                 results.setdefault(key, 0)
                 results[key] += 1
+
         results = sorted(results.items(), key=lambda s: s[1], reverse=True)
         maxcount = results[0][1]
         print(results)
