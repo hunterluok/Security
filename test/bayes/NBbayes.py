@@ -7,6 +7,130 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 
 
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+
+import numpy as np
+import logging
+
+
+log_format = "%(asctime)s - %(levelname)s - %(message)s"
+date_format = "%m/%d/%Y %H:%M:%S %p"
+logging.basicConfig(level=logging.INFO, filename='bayesName.log', filemode='w',
+                    format=log_format, datefmt=date_format)
+
+class MyBayes:
+    def __init__(self, alpha=1, norm=True, prior_fit=True, laplac=None):
+        self.alpha = alpha
+        self.norm = norm
+        self.prior_fit = prior_fit
+        self.laplac = laplac
+
+    @property
+    def best_score_(self):
+        return self.score
+
+    @property
+    def best_estimator_(self):
+        return self
+
+    def fit(self, data, label):
+        train_x, test_x, train_y, test_y = train_test_split(data, label, test_size=0.2)
+        pred = self.__fit(train_x, train_y).predict(test_x)
+        self.score = accuracy_score(test_y, pred)
+        #return score
+        return self
+
+    def __fit(self, data, label):
+        n_class = len(np.unique(label))
+        m, n = data.shape
+
+        if self.laplac is None:
+            self.laplac = m
+
+        logging.log(logging.INFO, "label is {}".format(label))
+        label = OneHotEncoder(categories='auto').fit_transform(label[:, np.newaxis]).toarray()
+
+        all_count_col = np.sum(data, axis=0)
+        sub_count = np.dot(label.T, data)
+        self.__likelihood = (sub_count + self.alpha) / (all_count_col + self.laplac * self.alpha)
+
+        if self.norm:
+            sums = np.sqrt(np.sum(np.power(self.__likelihood, 2), axis=1, keepdims=True))
+            assert sums.shape[1] == 1, "sums shape[1] != 1"
+            self.__likelihood /= sums
+
+        if not self.prior_fit:
+            self.prior = np.full(n_class, 1/(n_class * 1.0))[:, np.newaxis]
+        else:
+            self.prior = np.sum(sub_count, axis=1, keepdims=True) / np.sum(all_count_col)
+        return self
+
+    def predict(self, testdata):
+        w = np.log(self.__likelihood)
+        b = np.log(self.prior)
+        result = np.dot(testdata, w.T) + b.T
+        pred = np.argmax(result, axis=1)
+        return pred
+
+    def get_w(self):
+        return self.__likelihood
+
+
+def myplot(label):
+    plt.scatter(data[label == 0, 0], data[label == 0, 1])
+    plt.scatter(data[label == 1, 0], data[label == 1, 1])
+    plt.show()
+    # count = 0
+    # for i in range(3):
+    #     for j in range(i+1, 4):
+    #         plt.scatter(data[label == 0, i], data[label == 0, j])
+    #         plt.scatter(data[label == 1, i], data[label == 1, j])
+    #         count += 1
+    #         print("count is {}".format(count))
+    #         plt.show()
+
+
+if __name__ == "__main__":
+    from sklearn.datasets import load_iris
+    import matplotlib.pyplot as plt
+
+    data = load_iris()['data']
+    label = load_iris()['target']
+    data = load_iris()['data'][:100]
+    label = load_iris()['target'][:100]
+
+    print("---" * 20)
+    model = MyBayes(norm=False, alpha=1)
+    model.fit(data, label)
+    score = model.best_score_
+    print("score is {}".format(score))
+    print(model.get_w())
+    print(model.prior)
+
+    print("---" * 20)
+    model = MyBayes(norm=True, alpha=1, prior_fit=False)
+    model.fit(data, label)
+    score = model.best_score_
+    print("score is {}".format(score))
+    print(model.get_w())
+    print(model.prior)
+    #
+
+    print("---" * 20)
+    model = MyBayes(norm=True, alpha=1, laplac=100)
+    model.fit(data, label)
+    score = model.best_score_
+    print("score is {}".format(score))
+    print(model.get_w())
+    print(model.prior)
+
+
+
+
+
 class GetData:
     @staticmethod
     def get_testdata():
