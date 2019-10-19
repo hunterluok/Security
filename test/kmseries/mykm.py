@@ -11,10 +11,12 @@ import numpy as np
 from collections import Counter
 import matplotlib.pyplot as plt
 from multiprocessing import Queue, Process
-
 import logging
 import copy
 import time
+from abc import abstractmethod, ABCMeta
+
+from test.kmseries.kmdist import KmDist
 
 
 # 如何 分析 聚类中心的 随着迭代次数的变化。
@@ -34,16 +36,22 @@ def get_time(func):
     return wrapper
 
 
-class MyKm:
+class BaseKM(metaclass=ABCMeta):
+    @abstractmethod
+    def fit(self, data): None
+
+
+class MyKm(BaseKM, KmDist):
     def __init__(self, k=3):
+        super().__init__()
         self.k = k
         # 记录迭代的次数， count
         self.count = 0
         self.all_iter_center = []
 
-    def caldist(self, veca, vecb):
-        dist = np.sqrt(np.sum(np.power(veca - vecb, 2)))
-        return np.round(dist, 2)
+    # def cal_dist(self, veca, vecb):
+    #     dist = np.sqrt(np.sum(np.power(veca - vecb, 2)))
+    #     return np.round(dist, 2)
 
     def choosec(self, m):
         index = np.arange(m)
@@ -55,7 +63,7 @@ class MyKm:
         centors = data[index_centor]
         return centors
 
-    def __call__(self, data):
+    def fit(self, data):
         init_loss = -np.inf
         total_loss = 0
         m = data.shape[0]
@@ -73,7 +81,7 @@ class MyKm:
                 label = 0
                 dist = np.Inf
                 for j in range(self.k):
-                    mydist = self.caldist(data[i], centers[j])
+                    mydist = self.cal_dist(data[i], centers[j])
                     if mydist < dist:
                         dist = mydist
                         label = j
@@ -104,7 +112,6 @@ class MyKm:
     def center(self):
         return self.last_centers
 
-    @property
     def get_allcenter(self):
         return self.all_iter_center
 
@@ -130,7 +137,7 @@ class Kpp(MyKm):
             for index, line in enumerate(data):
                 min_dist = np.inf
                 for center in new_centers:
-                    dist = self.caldist(line, center)
+                    dist = self.cal_dist(line, center)
                     # 找到最小的距离，然后进行 后续步骤。
                     if dist < min_dist:
                         min_dist = dist
@@ -289,11 +296,12 @@ if __name__ == "__main__":
     #
     orilabel = load_iris()['target']
     # data = np.random.rand(200, 4)
-    """
+    # """
     mymodel = Kpp(3)
-    myresult, new_data = mymodel(data)
+    myresult, new_data = mymodel.fit(data)
     centers = mymodel.center
-    allcenters = mymodel.get_allcener
+    allcenters = mymodel.get_allcenter()
+
     print(allcenters)
     print(mymodel.count)
     # ndt = pd.DataFrame(new_data, columns=['z', 'd', 'g', 'class'])
@@ -309,7 +317,7 @@ if __name__ == "__main__":
         plt.scatter(center[1][0], center[1][1], color='black', marker="<")
         plt.scatter(center[2][0], center[2][1], color='black', marker=">")
     plt.show()
-    """
+    # """
     # 太大 导致没什么 聚类中心了。
     # 当 h 较大时 则 聚类的点数目，较少。 然后就是 对中心点 进行适当的保留小数位数，否则会造成中心点数量过多。
     # h的 选择 还有保留几位小数 将是一个比较难的选择。
