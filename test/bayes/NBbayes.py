@@ -73,20 +73,6 @@ class MyBayes:
         return self.__likelihood
 
 
-def myplot(label):
-    plt.scatter(data[label == 0, 0], data[label == 0, 1])
-    plt.scatter(data[label == 1, 0], data[label == 1, 1])
-    plt.show()
-    # count = 0
-    # for i in range(3):
-    #     for j in range(i+1, 4):
-    #         plt.scatter(data[label == 0, i], data[label == 0, j])
-    #         plt.scatter(data[label == 1, i], data[label == 1, j])
-    #         count += 1
-    #         print("count is {}".format(count))
-    #         plt.show()
-#
-#
 # if __name__ == "__main__":
 #     from sklearn.datasets import load_iris
 #     import matplotlib.pyplot as plt
@@ -136,6 +122,20 @@ class GetData:
             new_data.append(temp)
         new_label = label[:100]
         return new_data, new_label, data, label
+
+    @staticmethod
+    def myplot(label):
+        plt.scatter(data[label == 0, 0], data[label == 0, 1])
+        plt.scatter(data[label == 1, 0], data[label == 1, 1])
+        plt.show()
+        # count = 0
+        # for i in range(3):
+        #     for j in range(i+1, 4):
+        #         plt.scatter(data[label == 0, i], data[label == 0, j])
+        #         plt.scatter(data[label == 1, i], data[label == 1, j])
+        #         count += 1
+        #         print("count is {}".format(count))
+        #         plt.show()
 
 
 class NBayes:
