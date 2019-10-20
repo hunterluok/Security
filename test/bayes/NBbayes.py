@@ -5,28 +5,22 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
-
-
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+from test.logs.Alog import MyLogs
 
-import numpy as np
-import logging
-
-
-log_format = "%(asctime)s - %(levelname)s - %(message)s"
-date_format = "%m/%d/%Y %H:%M:%S %p"
-logging.basicConfig(level=logging.INFO, filename='bayesName.log', filemode='w',
-                    format=log_format, datefmt=date_format)
 
 class MyBayes:
+    __version__ = "1.0"
+
     def __init__(self, alpha=1, norm=True, prior_fit=True, laplac=None):
         self.alpha = alpha
         self.norm = norm
         self.prior_fit = prior_fit
         self.laplac = laplac
+        self.mylog = MyLogs("mybayes")
 
     @property
     def best_score_(self):
@@ -50,7 +44,7 @@ class MyBayes:
         if self.laplac is None:
             self.laplac = m
 
-        logging.log(logging.INFO, "label is {}".format(label))
+        self.mylog.info("label is {}".format(label))
         label = OneHotEncoder(categories='auto').fit_transform(label[:, np.newaxis]).toarray()
 
         all_count_col = np.sum(data, axis=0)
@@ -91,44 +85,41 @@ def myplot(label):
     #         count += 1
     #         print("count is {}".format(count))
     #         plt.show()
-
-
-if __name__ == "__main__":
-    from sklearn.datasets import load_iris
-    import matplotlib.pyplot as plt
-
-    data = load_iris()['data']
-    label = load_iris()['target']
-    data = load_iris()['data'][:100]
-    label = load_iris()['target'][:100]
-
-    print("---" * 20)
-    model = MyBayes(norm=False, alpha=1)
-    model.fit(data, label)
-    score = model.best_score_
-    print("score is {}".format(score))
-    print(model.get_w())
-    print(model.prior)
-
-    print("---" * 20)
-    model = MyBayes(norm=True, alpha=1, prior_fit=False)
-    model.fit(data, label)
-    score = model.best_score_
-    print("score is {}".format(score))
-    print(model.get_w())
-    print(model.prior)
-    #
-
-    print("---" * 20)
-    model = MyBayes(norm=True, alpha=1, laplac=100)
-    model.fit(data, label)
-    score = model.best_score_
-    print("score is {}".format(score))
-    print(model.get_w())
-    print(model.prior)
-
-
-
+#
+#
+# if __name__ == "__main__":
+#     from sklearn.datasets import load_iris
+#     import matplotlib.pyplot as plt
+#
+#     data = load_iris()['data']
+#     label = load_iris()['target']
+#     data = load_iris()['data'][:100]
+#     label = load_iris()['target'][:100]
+#
+#     print("---" * 20)
+#     model = MyBayes(norm=False, alpha=1)
+#     model.fit(data, label)
+#     score = model.best_score_
+#     print("score is {}".format(score))
+#     print(model.get_w())
+#     print(model.prior)
+#
+#     print("---" * 20)
+#     model = MyBayes(norm=True, alpha=1, prior_fit=False)
+#     model.fit(data, label)
+#     score = model.best_score_
+#     print("score is {}".format(score))
+#     print(model.get_w())
+#     print(model.prior)
+#     #
+#
+#     print("---" * 20)
+#     model = MyBayes(norm=True, alpha=1, laplac=100)
+#     model.fit(data, label)
+#     score = model.best_score_
+#     print("score is {}".format(score))
+#     print(model.get_w())
+#     print(model.prior)
 
 
 class GetData:
@@ -151,6 +142,7 @@ class NBayes:
     def __init__(self):
         self.param = {}
         self.complement = False
+        self.mylog = MyLogs(self.__class__.__name__)
 
     def split_data(self, data, label, target):
         if self.complement:
@@ -217,6 +209,7 @@ class MultiNB(NBayes):
             self.param.setdefault(k_label, {})
             self.param[k_label]['pri{}'.format(k_label)] = pri
             self.param[k_label]['like{}'.format(k_label)] = like_vect
+        self.mylog.info(" likelihood is {}".format(self.param))
         return self
 
 

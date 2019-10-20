@@ -1,9 +1,12 @@
 
 import numpy as np
 
+from test.logs.Alog import MyLogs
+
+
 class KmDist:
     def __init__(self):
-        pass
+        self.mylog = MyLogs(self.__class__.__name__)
 
     def _cal_dist(self, veca, vecb, flag='circle', T=24, ordermaxmin=(1, 0)):
         if flag == "circle":
@@ -35,12 +38,12 @@ class KmDist:
         temp_lens = set()
         if kargs is not None and isinstance(kargs, dict):
             for key, value in kargs.items():
-                #if key == 'nominal':
                 sub_va = va[value]
                 sub_vb = vb[value]
                 dist = self._cal_dist(sub_va, sub_vb, flag=key)
                 total_dist += dist
                 temp_lens |= set(value)
+                self.mylog.info("key is {}, dist is {}".format(key, dist))
 
         reserve = set(np.arange(lens)) - temp_lens
         if len(reserve) > 0:

@@ -1,0 +1,6 @@
+[2019-10-20 14:30:37,126] - Alog.py [Line:45] - [ERROR]-[thread:4557505984]-[process:25850] - value is 222
+[2019-10-20 14:30:37,126] - Alog.py [Line:53] - [ERROR]-[thread:4557505984]-[process:25850] - another value is 322
+[2019-10-20 14:30:51,510] - kmdist.py [Line:46] - [INFO]-[thread:4441621952]-[process:25858] - key is nominal, dist is 1
+[2019-10-20 14:30:51,511] - kmdist.py [Line:46] - [INFO]-[thread:4441621952]-[process:25858] - key is order, dist is 4.0
+[2019-10-20 14:32:26,129] - Alog.py [Line:45] - [ERROR]-[thread:4541625792]-[process:25883] - value is 222
+[2019-10-20 14:32:26,129] - Alog.py [Line:53] - [ERROR]-[thread:4541625792]-[process:25883] - another value is 322
