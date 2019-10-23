@@ -43,7 +43,10 @@ for i in range(N):
     cursor.execute(sql.format(i,data[i][0],data[i][1],data[i][2],data[i][3],data[i][4],data[i][5],data[i][6],data[i][7],data[i][8],data[i][9],data[i][10],data[i][11],data[i][12],data[i][13],data[i][14],data[i][15],data[i][16],data[i][17],data[i][18],data[i][19],data[i][20],data[i][21],data[i][22],data[i][23],data[i][24],data[i][25],data[i][26],data[i][27],data[i][28],data[i][29],data[i][30],data[i][31],data[i][32],data[i][33],data[i][34],data[i][35],data[i][36],data[i][37],data[i][38],data[i][39],data[i][40],data[i][41],data[i][42],data[i][43],str(data[i][44]),str(data[i][45]))
 
 
-data.encode('utf-8')
+# data.encode('utf-8')
 cursor.execute("select * from TEST789 limit 2")
 t =cursor.fetchall()
+
+
+
 
