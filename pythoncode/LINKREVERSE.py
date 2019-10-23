@@ -27,7 +27,6 @@ class ReverseNode:
         temp_new = None
 
         ano_temp = None
-
         temp = node
         count = 0
         while temp is not None:
@@ -82,6 +81,12 @@ def printnode(node):
         print(node.value)
         node = node.nexts
 
+def print_recursize(node):
+    # 反打印链表
+    if node is not None:
+        print_recursize(node.nexts)
+        print(node.value)
+
 if __name__ == "__main__":
     my = ListNode()
     for i in range(4, 33):
@@ -93,3 +98,6 @@ if __name__ == "__main__":
     nmy = ReverseNode()
     new = nmy.reverse_k(my.head, 3)
     printnode(new)
+
+    print("*" * 10)
+    print_recursize(new)
