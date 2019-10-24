@@ -28,21 +28,34 @@ class MergeNode:
             print(temp.value)
             temp = temp.nexts
 
+class MergeNodeTherr(MergeNode):
+    def __init__(self):
+        super(MergeNodeTherr, self).__init__()
+
+    def mergethree(self, node1, node2, node3):
+        merged = self.merge(node1, node2)
+        last = self.merge(merged, node3)
+        return last
+
 
 if __name__ == "__main__":
     first = listnode.ListNode()
     second = listnode.ListNode()
+    third = listnode.ListNode()
 
-    for i in range(8):
-        if i % 2 == 0:
+    for i in range(17):
+        if i % 3 == 0:
             first.push(i)
-        else:
+        elif i % 3 == 1:
             second.push(i)
+        else:
+            third.push(i)
 
     first.print_value()
     second.print_value()
+    third.print_value()
     print("--" * 10)
-    my = MergeNode()
-    result = my.merge(first.head, second.head)
+    my = MergeNodeTherr()
+    result = my.mergethree(first.head, second.head, third.head)
     my.print_value(result)
 
