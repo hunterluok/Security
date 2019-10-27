@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
     my = ListMerge() #Two()
     data = [1, 3, 5, 7]
-    data2 = [2, 3, 4, 4, 8, 9, 22, 31]
+    data2 = [2, 3, 4, 4, 8]
     print(my.get_merge(data, data2))
 
 

@@ -23,6 +23,13 @@ class ReverseNode:
         if k < 1 or not isinstance(k, int) or node is None:
             return ValueError
 
+        count = 0
+        cur = node
+        while cur is not None:
+            count += 1
+        if count < k:
+            return node
+
         new = None
         temp_new = None
 
@@ -66,6 +73,7 @@ class ReverseNode:
                 ncur.nexts = last
                 last = ncur
 
+            # 用来判断是否 一开始 就不需要旋转的。
             ano_temp = new
             if ano_temp is not None:
                 while ano_temp.nexts is not None:
@@ -74,6 +82,9 @@ class ReverseNode:
             else:
                 new = last
         return new
+
+
+
 
 
 def printnode(node):
