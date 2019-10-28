@@ -35,8 +35,17 @@ class InversePair:
         while left_index >= start and right_index >= start + length + 1:
             if data[left_index] > data[right_index]:
                 new[new_index] = data[left_index]
-                count += right_index - start - length
+                # count += right_index - start - length  统计逆序对。
 
+                # 统计翻转对
+                temp_index = right_index
+                while temp_index >= start + length + 1:
+                    if data[left_index] > 2 * data[temp_index]:
+                        count += 1
+                        print("ANOTH {}--{}".format(data[left_index], data[temp_index]))
+                    temp_index -= 1
+
+                # 统计 逆序对的 最大差值。
                 p = right_index
                 while start + length + 1 <= p <= right_index:
                     global a
@@ -78,11 +87,10 @@ class InversePair:
 
 
 if __name__ == "__main__":
-    data = [7, 5, 6, 4]
-    #data = [6, 5, 4, 3, 2, 1]
+    #data = [7, 5, 6, 4]
+    data = [6, 5, 4, 3, 2, 1]
     #data = [1, 2, 3, 4, 7, 6, 5]
     my = InversePair()
     print(my.get_pair(data))
     print(data)
     print("a is {}".format(a))
-

@@ -58,3 +58,4 @@ class Solution:
                     value2 = nums1[l1]
                 l1 += 1
         return (value1 + value2) / 2
+
