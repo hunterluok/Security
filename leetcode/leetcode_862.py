@@ -22,7 +22,6 @@ class Solutionss:
                         starts += 1
                 if maxs_len > ends - starts + 1:
                     maxs_len = ends - starts + 1
-
                 if flag:
                     temp_sum = sums
                     temp_index = starts
@@ -42,7 +41,69 @@ class Solutionss:
             return -1
         return maxs_len
 
-    def shortestSubarray(self, A, K: int) -> int:
+    def shortestSubarray(self, A, K:int) -> int:
+        lens = len(A)
+        if lens < 1:
+            return -1
+        last = float('inf')
+        temp = A
+
+        while len(temp) > 0:
+            maxs_len = self.find(temp, K)
+            if maxs_len != -1 and maxs_len < last:
+                last = maxs_len
+                print("maxs_len", maxs_len,  temp[0])
+            temp = temp[1:]
+        if last == float('inf'):
+            return -1
+        return last
+
+
+class Solution:
+    def find(self, A, K):
+        lens = len(A)
+        if lens < 1:
+            return -1
+
+        maxs_len = float("inf")
+        starts = 0
+        sums = 0
+        flag = False
+
+        for ends in range(lens):
+            second = A[ends]
+            sums += second
+            if second < 0:
+                flag = True
+
+            if sums - A[starts] >= K:
+                while sums - A[starts] >= K and starts < ends:
+                    sums -= A[starts]
+                    starts += 1
+            if maxs_len > ends - starts + 1:
+                maxs_len = ends - starts + 1
+
+            if sums >= K:
+                if flag:
+                    temp_sum = sums
+                    temp_index = starts
+                    while temp_index <= ends:# and temp_index < ends:
+                        if temp_sum - A[temp_index] < K:
+                            temp_sum -= A[temp_index]
+                            temp_index += 1
+                        else:
+                            temp_index += 1
+                            sums = temp_sum - A[temp_index]
+                            starts = temp_index
+                            temp_len = ends - temp_index + 1
+                            if temp_len < maxs_len and sums >= K:
+                                maxs_len = temp_len
+                    flag = False
+        if maxs_len == float("inf"):
+            return -1
+        return maxs_len
+
+    def shortestSubarray(self, A, K:int) -> int:
         lens = len(A)
         if lens < 1:
             return -1
@@ -136,11 +197,17 @@ if __name__ == "__main__":
      62386, 78576, 53968, 71968, 87917, -23647, 27308, 8966, 59304, -33144, -40647, -1905, 76492, 723, 2185, -15480,
      42839, 29325, 91440, 57885, -45019, 20578, -37963, 8524, 99725, 31004, 94011, -15693, 26920, -46080, 38084, 65575,
      34298, 65117, 23567, -27817, -24530, 85999, 98405, 8050, 11231, 50171, 39828]
+
     k = 3307758
 
-    print(sum(data), "dfdsf")
-    my = Solutionss()
+    print(max(data), " -- max")
+
+    import time
+
+    start = time.time()
+    my = Solution()
     print("result ", my.shortestSubarray(data, k))
+    print(time.time() - start)
 
     #print("result ", my.find(data[3:], k))
     #print("result ", my.find(data, k))
