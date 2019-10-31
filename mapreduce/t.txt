@@ -1,0 +1,4 @@
+word cep
+cep sd
+ss ps
+cep sd
