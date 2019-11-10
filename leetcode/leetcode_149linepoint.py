@@ -44,7 +44,6 @@ class Soluntion:
                 result[key] += 1
         result = sorted(result.items(), key=lambda s:s[1], reverse=True)
         print(result)
-
         #print(res[0.2], "---2222")
         res = {k: sum([datas[i] for i in set(v)]) for k, v in res.items()}
         res = sorted(res.items(), key=lambda s: s[1], reverse=True)
