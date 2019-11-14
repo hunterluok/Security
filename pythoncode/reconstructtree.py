@@ -50,11 +50,12 @@ class ReconstructTree:
         """
         if tree.left is not None:
             cls.print_value(tree.left, test)
-        if tree.right is not None:
-            cls.print_value(tree.right, test)
         if tree.value is not None:
             print(tree.value)
             test.append(tree.value)
+        if tree.right is not None:
+            cls.print_value(tree.right, test)
+
 
     @classmethod
     def compare(cls, lista, listb):
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     # preorderx = [1, 2, 4, 7, 3, 5, 6, 8, 11]
     # preorderx = [1, 2, 4, 7, 3, 5, 6]
     # preorderx = [1, 2, 4, 7, 3, 5, 6, 11]
-    inorderx = [4, 7, 2, 1, 5, 3, 6, 8]
+    inorderx = [4, 7, 2, 1, 5, 3, 8, 6]
 
     #preorderx = [1, 2, 4, 7]
     #inorderx = [4, 7, 2, 1]
@@ -91,5 +92,5 @@ if __name__ == "__main__":
     print("---", tests)
 
     # model.compare(tests,[1, 5, 3, 6, 8])
-    model.compare(tests, preorderx)
+    model.compare(tests, inorderx)
 
