@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -16,7 +16,7 @@ int main()
 	myarray.push_back (44);
 
 	cout << " find the element :" << endl;
-	std::vector<int> :: iterator ielement = find(myarray.begin(), myarray.end(), 444);
+	std::vector<int> :: iterator ielement = find(myarray.begin(), myarray.end(), 44);
 	while(ielement != myarray.end())
 	{
 		int position = distance(myarray.begin(), ielement);
