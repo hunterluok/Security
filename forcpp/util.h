@@ -36,7 +36,6 @@ bool readdata(string path,  vector<vector<float> >& data)
             stringstream another;
             another << temp;
             another >> temp_float;
-
             temp_vector.push_back(temp_float);
         }
         data.push_back(temp_vector);
@@ -169,15 +168,8 @@ void showmap(const T& data)
         iter ++;
     }
 }
-//template<typename T>
-//void showdata(const T& data)
-//{
-//	typename T::const_iterator iter = data.begin();
-//	for(; iter!= data.end(); ++iter)
-//	{
-//		cout  << ' ' << *iter;
-//	}
-//	cout << endl;
-//}
+
+
+
 
 #endif
