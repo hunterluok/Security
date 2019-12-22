@@ -1,2 +1,6 @@
-[2019-10-22 20:01:55,092] - kmdist.py [Line:46] - [INFO]-[thread:4597499328]-[process:42431] - key is nominal, dist is 1
-[2019-10-22 20:01:55,094] - kmdist.py [Line:46] - [INFO]-[thread:4597499328]-[process:42431] - key is order, dist is 4.0
+[2019-11-27 16:27:30,304] - kmdist.py [Line:46] - [INFO]-[thread:4501687744]-[process:83787] - key is nominal, dist is 1
+[2019-11-27 16:27:30,304] - kmdist.py [Line:46] - [INFO]-[thread:4501687744]-[process:83787] - key is order, dist is 4.0
+[2019-11-27 16:48:28,123] - kmdist.py [Line:46] - [INFO]-[thread:4586958272]-[process:85840] - key is nominal, dist is 1
+[2019-11-27 16:48:28,123] - kmdist.py [Line:46] - [INFO]-[thread:4586958272]-[process:85840] - key is order, dist is 4.0
+[2019-11-27 16:50:44,451] - kmdist.py [Line:46] - [INFO]-[thread:4318674368]-[process:85905] - key is nominal, dist is 1
+[2019-11-27 16:50:44,451] - kmdist.py [Line:46] - [INFO]-[thread:4318674368]-[process:85905] - key is order, dist is 4.0

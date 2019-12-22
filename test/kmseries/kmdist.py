@@ -70,6 +70,3 @@ if __name__ == "__main__":
 
     res = my.cal_dist(d1, d2, kargs={"nominal": [0, 1], "order":[2, 3]})
     print(res)
-
-
-

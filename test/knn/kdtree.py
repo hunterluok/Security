@@ -53,6 +53,13 @@ class KdTree:
         if tree.right is not None:
             cls.print_tree(tree.right)
 
+
+class findk:
+    def __init__(self):
+        pass
+
+
+
 if __name__ == "__main__":
     my = KdTree()
 
