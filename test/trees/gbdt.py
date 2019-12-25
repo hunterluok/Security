@@ -1,7 +1,7 @@
 
-from test.treeRegression import CartreeRegression
-
 import numpy as np
+
+from test.trees.treeRegression import CartreeRegression
 
 
 class GbdtTree(CartreeRegression):

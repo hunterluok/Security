@@ -82,7 +82,6 @@ class findk:
         dist = np.sum(np.power(da[0] - target.flatten(), 2))
         return dist
 
-
     def find_min(self, trees, data_node, target):
         min_dis = self.get_dist(data_node, target)
         if data_node.father is not None:

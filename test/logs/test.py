@@ -5,6 +5,7 @@ from collections import Counter
 
 class Main:
     __version__ = "1.1"
+
     def __init__(self):
         self.balance = Counter()
         self.log = logging.getLogger(self.__class__.__qualname__)
@@ -19,6 +20,7 @@ class Main:
 
         for k in self.balance:
             self.log.info("{0:.<16s} {1:n}".format(k, self.balance[k]))
+
 
 if __name__ == "__main__":
     a = Main()
