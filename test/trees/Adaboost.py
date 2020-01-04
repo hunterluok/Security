@@ -37,7 +37,7 @@ class AdaBoost:
             for j in range(1, int(numsteps)+1):
                 for k in ['lt', 'rh']:
                     threadvalues = minvalue + j * step
-                    preds = pred_value(data, i, threadvalues, k)
+                    preds = self.pred_value(data, i, threadvalues, k)
                 
                     errarr = np.ones((m, 1))
                     errarr[preds.flatten() == label] = 0 
