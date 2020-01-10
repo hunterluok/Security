@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error
 
 from test.trees.gbdt_linereg import GbLineReg, MyGbLine, MyGb_lad
 
-from test.trees.gbdt import LgbTreeLda
+from test.trees.gbdt_tree import LgbTreeLda
 
 
 if __name__ == "__main__":

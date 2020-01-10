@@ -64,8 +64,10 @@ class GbdtTree:
         pred_dict.setdefault("init_fx", f0)
 
         for i in range(self.n_trees):
+
             dety = 2 * target / (1 + np.exp(2 * np.multiply(target, fx)))
             newdata = np.concatenate([data, dety.reshape(m, 1)], axis=1)
+
             mymodel = CartreeRegression(min_leafs=3, max_depth=self.max_depth)
             mytree = mymodel.createTree(newdata)
             # print("carttree deep is {}".format(mymodel.get_deep(mytree)))
