@@ -315,5 +315,3 @@ if __name__ == "__main__":
     plt.scatter(np.arange(len(y_test)), y_test)
     plt.legend(['test4_pred', 'real'])
     plt.show()
-
-

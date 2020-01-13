@@ -1,93 +1,9 @@
 
 import numpy as np
+import random
 
 from test.trees.treeRegression import Tree, treeNode
-
-
-class TreeBase(Tree):
-    def __init__(self, min_leafs=4, max_depth=20, max_bins=10):
-        super(TreeBase, self).__init__()
-        self.min_leafs = min_leafs
-        self.max_depth = max_depth
-        self.max_bins = max_bins
-        self.lmds = 0.4
-        self.gama = 0.5
-
-    def splitdata(self, data, label, feature, value):
-        left_condtion = data[:, feature] <= value
-        left_d = data[left_condtion, :]
-        right_d = data[~left_condtion, :]
-        left_l = label[left_condtion, :]
-        right_l = label[~left_condtion, :]
-        return left_d, right_d, left_l, right_l
-
-    def regleaf(self, label, epis=3):
-        g = label[:, 0]
-        h = label[:, 1]
-        w = - np.sum(g) / (np.sum(h) + self.lmds)
-        return np.round(w, epis)
-
-    def regerr(self, label):
-        g = label[:, 0]
-        h = label[:, 1]
-        fenzi = np.power(np.sum(g), 2)
-        fenmu = np.sum(h) + self.lmds
-        return np.round(fenzi / fenmu, 3)
-
-    def createTree(self, data, label, depth=0):
-        if np.array(label).shape[1] != 2:
-            raise ValueError
-        retTree = treeNode()
-
-        if data.shape[0] < self.min_leafs:
-            retTree.label_class = self.regleaf(data)
-            return retTree
-
-        # 可以添加其他条件,终止树 停止生长，分类和回归树有不同的搞法。
-        # 这里阐释了如何 利用递归的思想去 建立决策树
-        feat, val = self.choosebestsplit(data, label)
-        # 如果没有可以再次切分的  feature 就返回val
-        if feat is None or depth > self.max_depth:
-            retTree.label_class = self.regleaf(label)
-            return retTree
-
-        # 这里先寻找切分点，然后再切分数据，会好点的
-        retTree.feature = feat
-        retTree.value = val
-        lset, rset, llabel, rlabel = self.splitdata(data, label, feat, val)
-
-        retTree.left_tree = self.createTree(lset, llabel, depth=depth + 1)
-        retTree.right_tree = self.createTree(rset, rlabel, depth=depth + 1)
-        return retTree
-
-    def choosebestsplit(self, data, label):
-        data = np.array(data)
-        m, n = data.shape
-
-        # 计算初始的方差。
-        S = self.regerr(label)
-        best_s = -np.inf
-        best_feat = None
-        best_val = None
-
-        for i in range(n):  # n feature
-            # 这么做的好处是 可以加快运行速度，其次可以减少偏态数据的影响，亲测可行
-            # ，改善预测效果（方差小偏琦大的问题）
-            minx = np.min(data[:, i])
-            maxs = np.max(data[:, i])
-            step = (maxs - minx) / self.max_bins
-            # 可以采用直方图，百分位数据 进行数据切分， 每个切分的值一样对，这里的是艰巨一样。 3种方法。
-            value_set = [minx + i * step for i in range(1, self.max_bins)]
-            for j in value_set:
-                mat0, mat1, llabel, rlabel = self.splitdata(data, label, i, j)
-                #这里就是 xgboost的 划分依据,选择 改变最大的值。
-                new_s = 0.5 * (self.regerr(llabel) + self.regerr(rlabel) - S) - self.gama
-                if new_s > best_s:
-                    best_feat = i
-                    best_val = j
-                    best_s = new_s
-        # 当方差改善不明显时，则停止，没必要进行更新。
-        return best_feat, best_val
+from test.trees.xgboost import TreeBase
 
 
 class XgboostTree:
@@ -97,12 +13,14 @@ class XgboostTree:
     def __init__(self,
                  n_trees=100,
                  max_depth=10,
-                 verbose=True):
+                 verbose=False,
+                 dropout=0.9):
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.verbose = verbose
         self.lmds = 0.4
         self.gama = 0.5
+        self.dropout = dropout
 
     def __sigmoid(self, x):
         return 1 / (1 + np.exp(-2 * x))
@@ -158,8 +76,24 @@ class XgboostTree:
         pred_dict = {}
         pred_dict.setdefault("init_fx", f0)
 
-        for i in range(self.n_trees):
-            dety = 2 * target / (1 + np.exp(2 * np.multiply(target, fx)))
+        mt = {}
+        mt.setdefault(0, fx)
+
+        for ntree in range(1, self.n_trees + 1):
+
+            # drop 获取
+            lens = len(mt)
+            sub_len = int(self.dropout * lens)
+            if sub_len < 1:
+                index = [np.random.randint(0, lens)]
+            else:
+                index_list = np.arange(lens)
+                random.shuffle(index_list)
+                index = index_list[:sub_len]
+
+            nfx = np.sum([mt[i] for i in index])
+
+            dety = 2 * target / (1 + np.exp(2 * np.multiply(target, nfx)))
             # 损失函数的 二阶倒数
             h = np.multiply(-2 * target / (1 + np.exp(-2 * np.multiply(target, fx))), dety)
 
@@ -170,12 +104,21 @@ class XgboostTree:
             # print("carttree deep is {}".format(mymodel.get_deep(mytree)))
             gama_list, node_gama, loss = self.__get_gama(data, mytree, target=label)
             if self.verbose:
-                print("loss at {} is {}".format(i, loss))
-            fx = fx + gama_list[:, 1:2]
+                print("loss at {} is {}".format(ntree, loss))
+
+            target = gama_list[:, 1:2]
+            # mt.setdefault(ntree, target * 1 / (len(index) + 1))
+
+            # 规范化。
+            factor = len(index) / (len(index) + 1)
+            mt = {k: (v / factor) for k, v in mt.items()}
+            mt.setdefault(ntree, target * 1 / (len(index) + 1))
+
             # 存储模型的参数
             pred_dict.setdefault("tree", []).append(mytree)
             pred_dict.setdefault("local_gama", []).append(node_gama)
         self.gdbt_modelparamter = pred_dict
+        print(mt)
         return self
 
     def gbdt_predict_line(self, line, bino=False):
