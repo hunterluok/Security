@@ -34,7 +34,7 @@ class PCAmodel:
         self.lambdas = self.pcamodel.singular_values_
         judge_matrix = np.power(pcadata, 2) / self.lambdas
 
-        major = judge_matrix[:, 0:self.front_m]
+        major = judge_matrix[:, 0: self.front_m]
         major = np.sum(major, axis=1, keepdims=True)
         minor = judge_matrix[:, -self.front_n:]
         minor = np.sum(minor, axis=1, keepdims=True)
