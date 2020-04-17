@@ -118,7 +118,12 @@ class mycarttree:
     # @staticmethod
     @classmethod
     def predict_line(cls, model, line, high=0):
+        # m, n = line.shape
+        # if m != 1:
+        #   raise TypeError("xx")
+        # 这里需要注意-> 这里只会返回一个值，而不是多个值。
         if model.label_class is not None:
+            # print(high)
             return model.label_class
         split_feature = model.feature
         split_value = model.value
@@ -142,6 +147,7 @@ class mycarttree:
     @classmethod
     def print_leafs(cls, model):
         """
+
         :param model:
         :return: 树的 叶子节点
         """
