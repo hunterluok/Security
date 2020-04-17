@@ -103,7 +103,7 @@ int mybaye::predict_line(vector<float> line) //, map<int, vector<float> >& resul
 	return line_pred;
 }
 
-nnm
+
 float mybaye::multiply(vector<float> veca, vector<float> vecb)
 {
 

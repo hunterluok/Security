@@ -10,6 +10,44 @@
 
 using namespace std;
 
+
+
+vector<vector<int> > readtarget()
+{
+    // string path = argv[1];
+    // cout << " " << argv[0]  << " " << argc << endl;
+    string path = "t.txt";
+    ifstream myfile(path, ios::in);
+
+    if (!myfile)
+    {
+        cout << "file is bad" << endl;
+        throw "file is wrong";
+    }
+
+    vector<vector<int> > newdata;
+    string line;
+    while(getline(myfile, line))
+    {
+        istringstream nline(line);
+        vector<int> temp_line;
+        string s;
+        while(nline >> s)
+        {
+            int temp = 0;
+            stringstream ano;
+            ano << s;
+            ano >> temp;
+
+            temp_line.push_back(temp);
+        }
+        newdata.push_back(temp_line);
+    }
+    return newdata;
+}
+
+
+
 bool readdata(string path,  vector<vector<float> >& data)
 {
 	ifstream myfile(path, ios::in);
@@ -168,8 +206,6 @@ void showmap(const T& data)
         iter ++;
     }
 }
-
-
 
 
 #endif

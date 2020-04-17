@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <fstream>
 // #include <assert.h>
 // #include <exception>
 using namespace std;
@@ -12,6 +14,41 @@ int row, int col, int row_filter, int col_filter);
 
 template<typename T>
 T pool(vector<vector<T> > data, int row, int col,int row_filter, int col_filter, string flag);
+
+
+vector<vector<float> > readtarget()
+{
+    // string path = argv[1];
+    // cout << " " << argv[0]  << " " << argc << endl;
+    string path = "t.txt";
+    ifstream myfile(path, ios::in);
+
+    if (!myfile)
+    {
+        cout << "file is bad" << endl;
+        throw "file is wrong";
+    }
+
+    vector<vector<float> > newdata;
+    string line;
+    while(getline(myfile, line))
+    {
+        istringstream nline(line);
+        vector<float> temp_line;
+        string s;
+        while(nline >> s)
+        {
+            float temp = 0.0;
+            stringstream ano;
+            ano << s;
+            ano >> temp;
+
+            temp_line.push_back(temp);
+        }
+        newdata.push_back(temp_line);
+    }
+    return newdata;
+}
 
 
 template<typename T>
@@ -131,47 +168,4 @@ T pool(vector<vector<T> > data, int row, int col,int row_filter, int col_filter,
 		return -1;
 	}
 	
-}
-
-
-template<typename T>
-vector<vector<T> > dot_multiply(vector<vector<T> > veca, vector<vector<T> >vecb)
-{
-	int row_a = veca.size();
-	int col_a = veca[0].size();
-	int row_b = vecb.size();
-	int col_b = vecb[0].size();
-
-	vector<vector<T> > result(row_a, vector<T> (col_a, 0));
-
-	if(row_a != row_b || col_b != col_a)
-	{
-		cout << " wrong " << endl;
-		return result;
-	}
-
-	for(size_t i = 0; i < row_a; ++i)
-	{
-		for(size_t j = 0; j < col_a; ++j)
-		{
-			result[i][j] = veca[i][j] * vecb[i][j];
-		}
-	}
-	return result;
-}
-
-template<typename T> void showvec(T& data)
-{
-    //typename T::iterator iter = data.begin();
-    int rows = data.size();
-    int cols = data[0].size();
-    for(size_t i = 0; i < rows; ++i)
-    {
-        for(size_t j = 0; j < cols; ++j)
-        {
-            cout << data[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << " over " << endl;
 }
