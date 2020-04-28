@@ -10,10 +10,10 @@ int main()
 	cout<<"increasing loop index:\n";
 
 	//int i;
-	for(int i=1;i<=len;i++)
+	for(int i = 1;i <= len; i++)
 	{
 		cout.write(state,i);
-		cout<<endl;
+		cout << endl;
 	}
 
 	cout <<"decreasing loop index:\n";

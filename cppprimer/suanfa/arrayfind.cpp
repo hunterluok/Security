@@ -12,6 +12,7 @@ void create_vector(vector<vector<int> >& data)
 	if(!myfile)
 	{
 		cout << "wrong" << endl;
+		return;
 	}
 
 	int a, b, c, d;

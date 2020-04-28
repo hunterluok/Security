@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #include <exception>
 #include <cstdio>
 #include <string>
@@ -34,8 +34,7 @@ void PrintTreeNode(const BinaryTreeNode* pNode)
     {
         printf("this node is nullptr.\n");
     }
-
-    printf("\n");
+    cout << endl;
 }
 
 void DestroyTree(BinaryTreeNode* pRoot)

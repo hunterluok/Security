@@ -15,7 +15,6 @@ public:
 
 	human(int sage) :age(sage)  // 附带初始化列表。
 	{
-		age = sage;
 	}
 
 	void setage(int data)

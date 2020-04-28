@@ -14,13 +14,10 @@ public:
 	{
 		delete [] elements;
 	}
+
 	bool pushs(T value);
 	T pops();
-
-	int show()
-	{
-		return top;
-	}
+	T show();
 
 private:
 	int top;
@@ -28,6 +25,16 @@ private:
 	int maxsize;
 	
 };
+
+template<typename T> T mystacks<T>::show()
+{
+    if(top == -1)
+    {
+        system("pause");
+        exit(1);
+    }
+    return elements[top];
+}
 
 template<typename T> bool mystacks<T>::pushs(T value)
 {
@@ -40,7 +47,7 @@ template<typename T> bool mystacks<T>::pushs(T value)
 	return true;
 }
 
-template<typename T> T mystacks<T>:: pops()
+template<typename T> T mystacks<T>::pops()
 {
 	if(top == -1)
 		exit(-1);
@@ -50,13 +57,7 @@ template<typename T> T mystacks<T>:: pops()
 int main()
 {
 	mystacks<int> mystack = mystacks<int>(2);
-
 	// mystack.pushs(23);
-	// mystack.pushs(56);
-	// mystack.pushs(11);
-	// mystack.pushs(23);
-	// mystack.pushs(56);
-	// mystack.pushs(11);
 
 	mystack.pushs(23);
 	mystack.pushs(56);

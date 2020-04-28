@@ -18,13 +18,13 @@ public:
 		delete elements;
 	}
 
-bool append(T value);
-bool find(T value);
-bool omit(T value);
-bool show();
+    bool append(T value);
+    bool find(T value);
+    bool omit(T value);
+    bool show();
 
 private:
-	T maxsize;
+	int maxsize;
 	T *elements;
 	
 };
