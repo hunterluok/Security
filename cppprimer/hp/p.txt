@@ -1,0 +1,6 @@
+a	3
+aa	3
+bb	3
+a	3
+bbb	3
+bb	3

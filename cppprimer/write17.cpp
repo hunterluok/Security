@@ -22,9 +22,9 @@ int main()
 		cout.write(state,i)<<endl;
 	}
 
-	//return 0;
-	cout<<"exceding string len:\n"<<endl;
-	cout.write(state,len+5)<<endl;
+;
+	cout.write(state,len+5)<<,endl;	//return 0;
+	cout<<"exceding string len:\n"<<endl
 
 	long val = 1231323;
 	cout<<sizeof(val)<<endl;

@@ -11,20 +11,22 @@ public:
 	mylists(int size)
 	{
 		maxsize = size;
+		this->length = 0;
 		elements = new T[maxsize];
 	}
 	~mylists()
 	{
-		delete elements;
+		delete [] elements;
 	}
 
     bool append(T value);
-    bool find(T value);
-    bool omit(T value);
+//    bool find(T value);
+//    bool omit(T value);
     bool show();
 
 private:
 	int maxsize;
+	int length;
 	T *elements;
 	
 };
@@ -32,10 +34,10 @@ private:
 
 template<typename T> bool mylists<T>::show()
 {
-	mylists<T>::iterator it=elements.begin();
-	if(; it!=elements.end(); it++)
+	//mylists<T>::iterator it=elements.begin();
+	for(size_t i = 0; i < length; ++i)
 	{
-		cout << "ele is : " << *it << endl;
+		cout << "ele is : " << elements[i] << endl;
  	}
  	return true;
 };
@@ -43,5 +45,28 @@ template<typename T> bool mylists<T>::show()
 
 template<typename T> bool mylists<T>::append(T value)
 {
-	return true;
+    if(length < maxsize)
+    {
+        elements[length] = value;
+        length++;
+        return true;
+    }
+    else
+    {
+        cout << "lists is full" << endl;
+        return false;
+    }
+
 };
+
+
+int main()
+{
+    mylists<int> my(4);
+    my.append(2);
+    my.append(11);
+    my.append(33);
+    my.show();
+
+
+}

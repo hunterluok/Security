@@ -7,8 +7,7 @@ int main()
 {
 	string key;
 	string value = "1";
-	std::vector<int> v;
-	v.push_back(2);
+
 	while(cin >> key)
 	{
 		cout << key << "\t" << value << endl;

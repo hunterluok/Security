@@ -18,23 +18,6 @@ void showdata(vector<string> data)
     cout << " line " << endl;
 }
 
-//vector<string> spilt(string data)
-//{
-//    vector<string> newdata;
-//    for(int i=0; i<data.size(); ++i)
-//    {
-//        if(data[i] == ' ')
-//        {
-//            continue;
-//        }
-//        else
-//        {
-//            newdata.push_back(data[i]);
-//        }
-//    }
-//    return newdata;
-//}
-
 
 int main()
 {
@@ -61,19 +44,21 @@ int main()
 
 	string myn;
     // cin >> myn;
-	// getline(cin, temp, ' '); //这里的区别
+	// getline(cin, temp, ' '); //这里的区别, " "是分割符号
 	vector<float> myvector;
 	string temp;
 	while(getline(cin, myn))
 	{
 	    string temp;
+	    cout << "myn is " << myn << endl;
 	    istringstream line(myn);
 	    while(line >> temp)
 	    {
 	        cout << "temp is " << temp << endl;
 	        float temp_float;
-	        stringstream << temp;
-	        stringstream >> temp_float;
+	        stringstream a;
+	        a << temp;
+	        a >> temp_float;
 	        myvector.push_back(temp_float);
 	    }
 	}
