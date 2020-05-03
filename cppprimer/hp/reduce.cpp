@@ -51,7 +51,8 @@ void dp(const T1& input1, const T2& input2)
 {
 	int new_n = static_cast <int> (input2);
 	// return  new_n * 3;
-	cout << input1 << "\t" << new_n * 3 << endl;
+	// cout << input1 << "\t" << new_n * 3 << endl;
+	cout << input1 << "\t" << new_n << endl;
 }
 
 
@@ -69,7 +70,7 @@ int main()
 		cin >> value;
 		if (last_key != cur_key)
 		{
-			// cout << last_key << "\t" << n << endl;
+			cout << last_key << "\t" << n << endl;
 			// cout << last_key << "\t" << displays(n) << endl;
 			dp(last_key, n);
 			last_key = cur_key;
@@ -80,35 +81,7 @@ int main()
 			n++;
 		}
 	}
-	// cout << last_key << "\t" << displays(n) << endl;
+	cout << last_key << "\t" << n << endl;
 	dp(last_key, n);
 	return 0;
 }
-
-
-
-
-//# create temp_table as select a.ku_id, a1, a1_datetime, user_id, buy_datetime from b left join a on sku_id;
-//
-//
-//create temp  as select *, (buy_datetime - a1_datetime) diff from
-//
-//(select a.ku_id, a1, a1_datetime, user_id, buy_datetime from b left join a on sku_id) where diff >=0;
-//
-//
-//
-//create table  last as select user_id, sku_id, buy_datetime, a1, a1_datetime
-//
-//from(select*,row_number() over (partition by ku_id order by diff asc) num from temp)t where t.num=1;
-//
-//
-//
-//temp = df.select("cate", "price").groupby("cate").mean()
-//
-//
-//df = df.join(temp, on = "cate", how="left")
-//
-//df = df.select("*").withcloumn("diff", df.price - df.meanprice)
-
-
-
