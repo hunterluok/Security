@@ -98,7 +98,7 @@ int mybaye::predict_line(vector<int> line) //, map<int, vector<float> >& result)
 			maxsums = sums;
 			line_pred = key;
 		}
-		iter ++;
+		iter++;
 	}
 	return line_pred;
 }
