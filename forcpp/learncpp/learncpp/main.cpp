@@ -11,6 +11,7 @@
 #include <vector>
 #include <iomanip>
 #include <json/json.h>
+//#include <json.h>
 
 #include "kmalgo.h"
 #include "util.h"
@@ -155,7 +156,6 @@ int main()
             vector<string> temp_data;
             while(getline(temp, tx, delim))
             {
-                //cout << " content : " << tx << endl;
                 //if(tx.length() > 10)
                 if(strlen(tx.c_str()) > 10)
                 {
@@ -175,20 +175,6 @@ int main()
     showvec(data);
     cout << "m " << data.size() << endl;
     cout << "n " << data[0].size() << endl;
-    
-    
-    const char* str = "{\"uploadid\": \"UP000000\",\"code\": 100,\"msg\": \"\",\"files\": \"\"}";
 
-    Json::Reader reader;
-    Json::Value root;
-    if (reader.parse(str, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
-    {
-        std::string upload_id = root["uploadid"].asString();  // 访问节点，upload_id = "UP000000"
-        int code = root["code"].asInt();    // 访问节点，code = 100
-        cout << "print " << code << endl;
-    }
-    
-    
     return 1;
-    
 }
