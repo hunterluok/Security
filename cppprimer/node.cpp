@@ -14,6 +14,6 @@ int main()
 {
 	single a(int data=1);
 
-	cout << a-data << " data " << endl;
+	cout << a.data << " data " << endl;
 	return 0;
 }
