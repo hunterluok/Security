@@ -5,6 +5,10 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstdlib>
+#include <chrono>
+#include <thread>
+#include <sstream>
 
 using namespace std;
 
@@ -18,8 +22,15 @@ readdata(string path, const int fields = 5, const char delimiter = '\t')
 	if(!ifs.is_open())
 	{
 	    cout << " file is not opend " << endl;
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	}
+//  不太好用，最好是多线程读取不同的文件夹、
+//	if(positon != 0)
+//	{
+//	    ifs.seekg(positon, ios::beg);
+//	}
+
+    int count = 0;
 
 	string ss;
 	vector<vector<string> > nd;
@@ -32,6 +43,7 @@ readdata(string path, const int fields = 5, const char delimiter = '\t')
 	    vector<string> temp_n;
 	    //这里注意数据的 维度为5；
 	    temp_n.reserve(fields);
+
         // 切分数据的方法。
 	    while(getline(temp_s, t_s, delimiter))
 	    {
@@ -39,7 +51,12 @@ readdata(string path, const int fields = 5, const char delimiter = '\t')
 
 	    }
 	    nd.push_back(temp_n);
+
+	    count++;
+	    if(count > 2)
+	        break;
 	}
+	ifs.close();
 
 	return nd;
 }

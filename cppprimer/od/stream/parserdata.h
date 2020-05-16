@@ -12,25 +12,15 @@
 
 #include "readdata.h"
 #include "parserjson.h"
+#include "util.h"
 
 using namespace std;
 
-const vector<string> sets = {"relWenshu", "directory", "s17", "s11", "s47", "s45", "s1", "s2", "s22"};
-//vector<string> sets = {"s1", "s2", "s22", "s23", "s26", "s27", "s28", "s3", "s43", "s45", "s47", "s11", "s17", "relWenshu", "directory"};
-
-
-void procdata(Json::Value data)
+void procdata(Json::Value data, const set<string>& myset)
 {
     // 过滤掉部分不需要的数据
-    set<string> myset;
-    for(size_t i = 0; i < sets.size(); ++i)
-    {
-        myset.insert(sets[i]);
-    }
-
     // 解析数据
-	Json::Value::Members members;
-	members = data.getMemberNames();
+	Json::Value::Members members = data.getMemberNames();
 
 	for(size_t j=0; j < members.size(); ++j)
 	{

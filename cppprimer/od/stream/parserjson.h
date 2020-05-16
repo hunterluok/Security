@@ -15,7 +15,6 @@ vector<Json::Value>  getjson(const vector<vector<string> >, const int position =
 string parsestr(const string& forfun, const char mychar)
 {
 	string news = "";
-
 	size_t i = 0;
 
 	for(; i < forfun.length(); ++i)
@@ -53,12 +52,9 @@ vector<Json::Value>  getjson(const vector<vector<string> > nd, const int positio
     Json::CharReaderBuilder builder;
 	JSONCPP_STRING errs;
 	Json::Value root;
-
 	vector<Json::Value> data;
-
-	cout << "total  case: " << nd.size() << endl;
-	cout << endl;
-
+//	cout << "total  case: " << nd.size() << endl;
+//	cout << endl;
     for(size_t i = 0; i < nd.size(); ++i)
     {
         // 将特定 的feild 解析为 json, 这里过滤掉了部分数据。
@@ -76,9 +72,7 @@ vector<Json::Value>  getjson(const vector<vector<string> > nd, const int positio
 		}
         //cout << "*** " << parsestr(nd[i][2], '"') << endl;
     }
-
     return data;
-
 }
 
 #endif
