@@ -30,7 +30,6 @@ int main()
     mt.setdata(&d);
 
     CThreadPool tp(5);
-
     for(int i = 0; i < 10; ++i)
     {
         tp.addtask(&mt);
@@ -38,12 +37,12 @@ int main()
     }
     while(1)
     {
-        cout << " least thread pool " << tp.gettasksize() << endl;
+        cout << " least thread pool " << tp.gettasksize() << "----" << endl;
         if(tp.gettasksize() == 0)
         {
             if(tp.stopall() == -1)
             {
-                std::cout << "thread pool clear, exit" << std::endl;
+                cout << "thread pool clear, exit" << endl;
                 exit(0);
             }
         }
