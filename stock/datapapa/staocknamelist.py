@@ -1,3 +1,5 @@
+#获取所有股票的代码
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -31,11 +33,19 @@ def getSharelist(html):
     return sets
 
 
+def writedata(data, path):
+    with open(path, "w") as f:
+        for key in data:
+            f.write(key + "\n")
+    print("save data data")
+
+
 if __name__ == "__main__":
     url1 = "http://quote.eastmoney.com/stock_list.html"
     html = getHTMLpages(url1)
 
     mystock = getSharelist(html)
-    print(mystock)
+    #print(mystock)
+    writedata(mystock, "allname.txt")
 
 

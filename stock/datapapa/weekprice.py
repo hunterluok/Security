@@ -20,6 +20,7 @@ def Get_Url(num):
 
 # 获取历史每周价格，关键函数。
 
+
 def GetInfo(num):
     for i in range(num):
         try:
